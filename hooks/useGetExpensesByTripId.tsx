@@ -1,12 +1,12 @@
-import api from '@/api';
 import { TIME } from '@/constants/Time';
+import api from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 
 type Expenses = {
   id: string;
   userId: string;
   categoryId: string;
-  categoryName: string;
+  categoryLabel: string;
   categoryColor: string;
   tripId: string;
   label: string;

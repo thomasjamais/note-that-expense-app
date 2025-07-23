@@ -1,5 +1,5 @@
-import api from '@/api';
 import { TIME } from '@/constants/Time';
+import api from '@/lib/api';
 import { queryClient } from '@/lib/queryClient';
 import { useMutation, useQuery } from '@tanstack/react-query';
 

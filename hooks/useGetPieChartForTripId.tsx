@@ -1,5 +1,5 @@
-import api from '@/api';
 import { TIME } from '@/constants/Time';
+import api from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 
 export type PieChartInput = {

@@ -1,5 +1,5 @@
-import api from '@/api';
 import { useAuth } from '@/contexts/AuthContext';
+import api from '@/lib/api';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 

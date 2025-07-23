@@ -1,4 +1,4 @@
-import api from '@/api';
+import api from '@/lib/api';
 import { useMutation } from '@tanstack/react-query';
 
 interface RegisterInput {

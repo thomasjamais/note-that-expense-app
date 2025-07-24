@@ -6,7 +6,8 @@
         "development": {
             "distribution": "internal",
             "android": {
-                "buildType": "apk"
+                "buildType": "apk",
+                "package": "com.thomasjamais.noteThatExpense"
             }
         },
         "preview": {

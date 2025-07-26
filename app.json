@@ -34,16 +34,11 @@
     "plugins": [
       "expo-router",
       [
-        "expo-network-security-config",
+        "expo-build-properties",
         {
-          "domainConfigurations": [
-            {
-              "cleartextTrafficPermitted": true,
-              "domains": [
-                "15.236.205.31"
-              ]
-            }
-          ]
+          "android": {
+            "usesCleartextTraffic": true
+          }
         }
       ]
     ],

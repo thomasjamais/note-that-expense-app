@@ -1,6 +1,7 @@
 // index.tsx
+import Button from '@/components/Button';
 import { useState } from 'react';
-import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useLogin } from './hook';
 
 export default function LoginScreen() {
@@ -54,3 +55,46 @@ const styles = StyleSheet.create({
   },
   error: { color: 'red', marginTop: 10 },
 });
+
+// import React, { useState } from 'react';
+// import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
+// import { useLogin } from './hook';
+
+// export default function LoginScreen() {
+//   const [email, setEmail] = useState('');
+//   const [password, setPassword] = useState('');
+//   const { mutate, isLoading, isError } = useLogin();
+
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.title}>Connexion</Text>
+//       {isError && <Text style={styles.error}>Échec de la connexion</Text>}
+//       <TextInput
+//         style={styles.input}
+//         placeholder="Email"
+//         autoCapitalize="none"
+//         value={email}
+//         onChangeText={setEmail}
+//       />
+//       <TextInput
+//         style={styles.input}
+//         placeholder="Mot de passe"
+//         secureTextEntry
+//         value={password}
+//         onChangeText={setPassword}
+//       />
+//       <Button
+//         title={isLoading ? '…' : 'Se connecter'}
+//         onPress={() => mutate({ email, password })}
+//         disabled={isLoading || !email || !password}
+//       />
+//     </View>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: { flex:1, justifyContent:'center', padding:16, backgroundColor:'#fff' },
+//   title: { fontSize:24, fontWeight:'bold', marginBottom:24, textAlign:'center' },
+//   error: { color:'red', marginBottom:12, textAlign:'center' },
+//   input: { borderWidth:1, borderColor:'#ccc', borderRadius:4, padding:8, marginBottom:12 },
+// });

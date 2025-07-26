@@ -1,5 +1,6 @@
+import Button from '@/components/Button';
 import React, { useState } from 'react';
-import { Button, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import LoginScreen from './Login';
 import RegisterScreen from './Register';
 
@@ -9,16 +10,8 @@ export default function AuthScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.switchButtons}>
-        <Button
-          title="Connexion"
-          onPress={() => setMode('login')}
-          color={mode === 'login' ? 'blue' : 'gray'}
-        />
-        <Button
-          title="Inscription"
-          onPress={() => setMode('register')}
-          color={mode === 'register' ? 'blue' : 'gray'}
-        />
+        <Button title="Connexion" onPress={() => setMode('login')} />
+        <Button title="Inscription" onPress={() => setMode('register')} />
       </View>
 
       <View style={styles.formContainer}>

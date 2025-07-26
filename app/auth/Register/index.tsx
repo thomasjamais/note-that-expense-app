@@ -1,5 +1,6 @@
+import Button from '@/components/Button';
 import { useState } from 'react';
-import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useRegister } from './hook';
 
 export default function RegisterScreen() {

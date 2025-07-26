@@ -10,7 +10,7 @@ export default function Index() {
   useEffect(() => {
     if (!isLoading) {
       // si connecté → main, sinon → login
-      router.replace(token ? '/main' : '/auth/Login');
+      router.replace(token ? '/main' : '/auth');
     }
   }, [token, isLoading, router]);
 

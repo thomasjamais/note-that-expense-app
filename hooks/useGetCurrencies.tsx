@@ -2,7 +2,7 @@ import api from '@/api';
 import { TIME } from '@/constants/Time';
 import { useQuery } from '@tanstack/react-query';
 
-type Currency = {
+export type Currency = {
   id: string;
   code: string;
   symbol: string;

@@ -1,7 +1,7 @@
 import api from '@/api';
 import { TIME } from '@/constants/Time';
 import { queryClient } from '@/lib/queryClient';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
 
 type AddTripInput = {
   label: string;
@@ -10,6 +10,19 @@ type AddTripInput = {
   startDate: Date;
   endDate?: Date;
   isActive: boolean;
+};
+
+export type Trip = {
+  id: string;
+  label: string;
+  localCurrencyId: string;
+  homeCurrencyId: string;
+  startDate: Date;
+  endDate?: Date;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string;
 };
 
 export const useAddTrip = () => {
@@ -28,7 +41,7 @@ export const useAddTrip = () => {
   });
 };
 
-export const useListTrips = () => {
+export const useListTrips = (): UseQueryResult<Trip[]> => {
   return useQuery({
     queryKey: ['trips'],
     queryFn: async () => {

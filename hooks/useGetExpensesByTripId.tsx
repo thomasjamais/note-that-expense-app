@@ -6,7 +6,7 @@ type Expenses = {
   id: string;
   userId: string;
   categoryId: string;
-  categoryName: string;
+  categoryLabel: string;
   categoryColor: string;
   tripId: string;
   label: string;

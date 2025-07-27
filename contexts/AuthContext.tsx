@@ -1,3 +1,4 @@
+import { registerLogoutHandler } from '@/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -37,6 +38,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     await AsyncStorage.removeItem('token');
     setToken(null);
   };
+
+  useEffect(() => {
+    registerLogoutHandler(logout);
+  }, [logout]);
 
   return (
     <AuthContext.Provider value={{ token, isLoading, login, logout }}>

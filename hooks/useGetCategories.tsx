@@ -16,7 +16,6 @@ export const useGetCategories = () => {
     queryKey: ['categories'],
     queryFn: async () => {
       const { data } = await api.get(`/categories`);
-      console.log('Fetched categories:', data);
       return data;
     },
     staleTime: TIME.FIVE_MINUTES_IN_MILLISECONDS,

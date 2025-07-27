@@ -1,6 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
+type LogoutHandler = () => void;
+let onLogout: LogoutHandler | null = null;
+
+export function registerLogoutHandler(fn: LogoutHandler) {
+  onLogout = fn;
+}
+
 const api = axios.create({
   baseURL: 'http://15.236.205.31:3000/', // 'http://192.168.1.194:3000/',
   // baseURL: 'http://192.168.1.194:3000/',
@@ -20,6 +27,16 @@ api.interceptors.request.use(
     return config;
   },
   (error) => Promise.reject(error),
+);
+
+api.interceptors.response.use(
+  (res) => res,
+  async (err) => {
+    if (err.response?.status === 401) {
+      onLogout?.();
+    }
+    return Promise.reject(err);
+  },
 );
 
 export default api;

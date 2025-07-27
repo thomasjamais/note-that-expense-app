@@ -14,7 +14,6 @@ export const useCurrencies = () => {
     queryKey: ['currencies'],
     queryFn: async () => {
       const { data } = await api.get('/currencies');
-      console.log('Fetched currencies:', data);
       return data;
     },
     staleTime: TIME.FIVE_MINUTES_IN_MILLISECONDS,

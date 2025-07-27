@@ -1,5 +1,7 @@
 import api from '@/api';
+import { useSnackbar } from '@/contexts/SnackbarContext';
 import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'expo-router';
 
 interface RegisterInput {
   email: string;
@@ -13,7 +15,18 @@ const registerUser = async (data: RegisterInput) => {
 };
 
 export const useRegister = () => {
+  const router = useRouter();
+
+  const { showMessage } = useSnackbar();
+
   return useMutation({
     mutationFn: registerUser,
+    onSuccess: () => {
+      showMessage('Inscription réussie, vous pouvez vous connecter maintenant.', 'success');
+      router.push('/auth/Login');
+    },
+    onError: (error) => {
+      showMessage(`Erreur lors de l'inscription : ${error.message}`, 'error');
+    },
   });
 };

@@ -16,17 +16,7 @@ export default function RegisterScreen() {
       return;
     }
 
-    mutate(
-      { email, password, confirmPassword },
-      {
-        onSuccess: () => {
-          Alert.alert('Succès', 'Inscription réussie');
-        },
-        onError: () => {
-          Alert.alert('Erreur', 'Inscription échouée');
-        },
-      },
-    );
+    mutate({ email, password, confirmPassword });
   };
 
   return (

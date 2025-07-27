@@ -1,4 +1,5 @@
 import api from '@/api';
+import { useSnackbar } from '@/contexts/SnackbarContext';
 import { queryClient } from '@/lib/queryClient';
 import { useMutation } from '@tanstack/react-query';
 
@@ -8,6 +9,8 @@ type DeleteExpenseInput = {
 };
 
 export const useDeleteExpense = () => {
+  const { showMessage } = useSnackbar();
+
   return useMutation({
     mutationFn: async (data: DeleteExpenseInput) => {
       const response = await api.delete(`/expenses/trip/${data.tripId}/expenses/${data.expenseId}`);
@@ -17,9 +20,10 @@ export const useDeleteExpense = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['expenses'] });
       queryClient.invalidateQueries({ queryKey: ['charts'] });
+      showMessage('Dépense supprimée avec succès !', 'success');
     },
     onError: (error) => {
-      alert('Failed to delete expense. Please try again.');
+      showMessage(`Erreur lors de la suppression de la dépense : ${error.message}`, 'error');
     },
   });
 };

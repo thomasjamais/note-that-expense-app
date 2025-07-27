@@ -1,4 +1,5 @@
 import api from '@/api';
+import { useSnackbar } from '@/contexts/SnackbarContext';
 import { queryClient } from '@/lib/queryClient';
 import { useMutation } from '@tanstack/react-query';
 
@@ -7,6 +8,8 @@ type DeleteTripInput = {
 };
 
 export const useDeleteTrip = () => {
+  const { showMessage } = useSnackbar();
+
   return useMutation({
     mutationFn: async (data: DeleteTripInput) => {
       const response = await api.delete(`/trips/${data.tripId}`);
@@ -16,9 +19,10 @@ export const useDeleteTrip = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['trips'] });
       queryClient.invalidateQueries({ queryKey: ['charts'] });
+      showMessage('Voyage supprimé avec succès !', 'success');
     },
     onError: (error) => {
-      alert('Failed to delete trip. Please try again.');
+      showMessage(`Erreur lors de la suppression du voyage : ${error.message}`, 'error');
     },
   });
 };

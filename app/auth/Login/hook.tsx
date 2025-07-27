@@ -1,5 +1,6 @@
 import api from '@/api';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSnackbar } from '@/contexts/SnackbarContext';
 import { useMutation } from '@tanstack/react-query';
 
 interface LoginInput {
@@ -13,12 +14,19 @@ const loginUser = async (data: LoginInput) => {
 };
 
 export const useLogin = () => {
+  const { showMessage } = useSnackbar();
+
   const { login } = useAuth();
 
   return useMutation({
     mutationFn: loginUser,
+
+    onError: (error) => {
+      showMessage(`Erreur lors de la connexion : ${error.message}`, 'error');
+    },
     onSuccess: async (data) => {
       login(data.token);
+      showMessage('Connexion réussie', 'success');
     },
   });
 };

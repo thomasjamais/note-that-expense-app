@@ -16,17 +16,7 @@ export default function LoginScreen() {
       return;
     }
 
-    mutate(
-      { email, password },
-      {
-        onSuccess: (data) => {
-          Alert.alert('Succès', 'Connexion réussie');
-        },
-        onError: (error) => {
-          Alert.alert('Erreur', 'Identifiants invalides');
-        },
-      },
-    );
+    mutate({ email, password });
   };
 
   return (

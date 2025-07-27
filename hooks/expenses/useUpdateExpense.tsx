@@ -1,4 +1,5 @@
 import api from '@/api';
+import { useSnackbar } from '@/contexts/SnackbarContext';
 import { queryClient } from '@/lib/queryClient';
 import { useMutation } from '@tanstack/react-query';
 
@@ -12,6 +13,8 @@ type UpdateExpenseInput = {
 };
 
 export const useUpdateExpense = () => {
+  const { showMessage } = useSnackbar();
+
   return useMutation({
     mutationFn: async (data: UpdateExpenseInput) => {
       const { tripId, expenseId, ...expenseData } = data;
@@ -25,9 +28,10 @@ export const useUpdateExpense = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['expenses'] });
       queryClient.invalidateQueries({ queryKey: ['charts'] });
+      showMessage('Dépense mise à jour avec succès !', 'success');
     },
     onError: (error) => {
-      alert('Failed to add expense. Please try again.');
+      showMessage(`Erreur lors de la mise à jour de la dépense : ${error.message}`, 'error');
     },
   });
 };

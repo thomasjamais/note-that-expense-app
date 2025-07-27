@@ -2,7 +2,7 @@ import Expenses from '@/components/Expenses';
 import Skeleton from '@/components/Skeleton';
 import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
 import { useGetCategories } from '@/hooks/useGetCategories';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 export default function ExpenseTrackerScreen() {
   const {
@@ -19,7 +19,7 @@ export default function ExpenseTrackerScreen() {
   if (isActiveTripError || isCategoriesError) {
     return (
       <View style={{ alignItems: 'center', marginVertical: 20 }}>
-        Erreur lors du chargement des données.
+        <Text>Erreur lors du chargement des données.</Text>
       </View>
     );
   }

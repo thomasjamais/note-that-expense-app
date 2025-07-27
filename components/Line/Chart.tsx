@@ -1,4 +1,5 @@
 import { LineChartData } from '@/hooks/useGetLineChartForTripId';
+import { useEffect } from 'react';
 import { Dimensions, ScrollView } from 'react-native';
 import { StackedBarChart } from 'react-native-chart-kit';
 
@@ -15,9 +16,11 @@ export default function Chart({
   selectedCategories,
   setSelectedCategories,
 }: ChartProps) {
-  if (stackedBarData && selectedCategories.length === 0) {
-    setSelectedCategories(stackedBarData.legend);
-  }
+  useEffect(() => {
+    if (stackedBarData && selectedCategories.length === 0) {
+      setSelectedCategories(stackedBarData.legend);
+    }
+  }, [stackedBarData, selectedCategories, setSelectedCategories]);
 
   const categoryIndexes = stackedBarData.legend
     .map((cat, index) => (selectedCategories.includes(cat) ? index : -1))

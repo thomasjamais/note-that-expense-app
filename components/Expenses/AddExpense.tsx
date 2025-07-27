@@ -4,6 +4,7 @@ import { Category } from '@/hooks/useGetCategories';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
 import Button from '../Button';
 
@@ -13,6 +14,8 @@ type AddExpenseProps = {
 };
 
 export default function AddExpense({ activeTrip, categories }: AddExpenseProps) {
+  const { t } = useTranslation();
+
   const { mutate: addExpenseMutation, isPending } = useAddExpense();
   const [label, setLabel] = useState('');
   const [bath, setBath] = useState('');
@@ -33,25 +36,25 @@ export default function AddExpense({ activeTrip, categories }: AddExpenseProps) 
       originalAmount: parseFloat(bath),
       date,
     });
-
-    Alert.alert('Succès', 'Dépense ajoutée !');
   };
 
   return (
     <View>
-      <Text style={styles.title}>Ajouter une dépense</Text>
-      <Text style={styles.label}>Pour le trip Actif : {activeTrip?.label || 'Aucun'}</Text>
+      <Text style={styles.title}>{t('expenses.addLabel')}</Text>
+      <Text style={styles.label}>
+        {t('expenses.forTravel')}: {activeTrip?.label || 'Aucun'}
+      </Text>
 
-      <Text style={styles.label}>Nom</Text>
+      <Text style={styles.label}>{t('expenses.name')}</Text>
       <TextInput
         style={styles.input}
-        placeholder="Nom de la dépense"
+        placeholder={t('expenses.expenseName')}
         value={label}
         onChangeText={setLabel}
       />
 
       <Text style={styles.label}>
-        Montant en {activeTrip?.localCurrencyName} {activeTrip?.localCurrencySymbol}
+        {t('expenses.amountIn')} {activeTrip?.localCurrencyName} {activeTrip?.localCurrencySymbol}
       </Text>
       <TextInput
         style={styles.input}
@@ -61,7 +64,7 @@ export default function AddExpense({ activeTrip, categories }: AddExpenseProps) 
         onChangeText={setBath}
       />
 
-      <Text style={styles.label}>Date</Text>
+      <Text style={styles.label}>{t('expenses.date')}</Text>
       <Button title={date.toDateString()} onPress={() => setShowDatePicker(true)} />
       {showDatePicker && (
         <DateTimePicker
@@ -76,7 +79,7 @@ export default function AddExpense({ activeTrip, categories }: AddExpenseProps) 
         />
       )}
 
-      <Text style={styles.label}>Catégorie</Text>
+      <Text style={styles.label}>{t('expenses.category')}</Text>
       <Picker
         selectedValue={category}
         onValueChange={(itemValue: string) => setCategory(itemValue)}
@@ -87,7 +90,7 @@ export default function AddExpense({ activeTrip, categories }: AddExpenseProps) 
         ))}
       </Picker>
 
-      <Button title="Ajouter" onPress={handleSubmit} disabled={isPending} />
+      <Button title={t('expenses.addButton')} onPress={handleSubmit} disabled={isPending} />
     </View>
   );
 }

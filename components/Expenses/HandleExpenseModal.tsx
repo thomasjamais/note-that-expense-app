@@ -5,6 +5,7 @@ import { Category } from '@/hooks/useGetCategories';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal, StyleSheet, Text, TextInput, View } from 'react-native';
 import Button from '../Button';
 
@@ -23,6 +24,8 @@ export default function HandleExpenseModal({
   modalVisible,
   setModalInvisible,
 }: ExpenseListProps) {
+  const { t } = useTranslation();
+
   const { mutate: deleteExpenseForTripMutation } = useDeleteExpense();
   const { mutate: updateExpenseForTripMutation } = useUpdateExpense();
 
@@ -65,21 +68,21 @@ export default function HandleExpenseModal({
     <Modal visible={modalVisible} animationType="slide" transparent>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Text>Modifier la dépense</Text>
+          <Text>{t('expenses.editExpense')}</Text>
           <TextInput
             value={label}
             onChangeText={setLabel}
-            placeholder="Label"
+            placeholder={t('expenses.expenseName')}
             style={styles.input}
           />
           <TextInput
             value={amount}
             onChangeText={setAmount}
-            placeholder="Montant"
+            placeholder={t('expenses.amountIn')}
             keyboardType="numeric"
             style={styles.input}
           />
-          <Text style={styles.label}>Date</Text>
+          <Text style={styles.label}>{t('expenses.date')}</Text>
           <Button title={date.toDateString()} onPress={() => setShowDatePicker(true)} />
           {showDatePicker && (
             <DateTimePicker
@@ -93,7 +96,7 @@ export default function HandleExpenseModal({
               }}
             />
           )}
-          <Text style={styles.label}>Catégorie</Text>
+          <Text style={styles.label}>{t('expenses.category')}</Text>
           <Picker
             selectedValue={category}
             onValueChange={(itemValue: string) => setCategory(itemValue)}
@@ -104,9 +107,9 @@ export default function HandleExpenseModal({
             ))}
           </Picker>
 
-          <Button variant="success" title="Sauvegarder" onPress={handleSave} />
-          <Button variant="error" title="Supprimer" onPress={handleDelete} />
-          <Button title="Fermer" onPress={() => setModalInvisible()} />
+          <Button variant="success" title={t('expenses.editButton')} onPress={handleSave} />
+          <Button variant="error" title={t('expenses.deleteButton')} onPress={handleDelete} />
+          <Button title={t('expenses.close')} onPress={() => setModalInvisible()} />
         </View>
       </View>
     </Modal>

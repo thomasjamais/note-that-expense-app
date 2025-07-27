@@ -1,0 +1,28 @@
+{
+    "expenses": {
+        "title": "Expenses",
+        "addLabel": "Add an expense",
+        "forTravel": "For the active trip",
+        "name": "Name",
+        "expenseName": "Expense Name",
+        "amountIn": "Amount in",
+        "date": "Date",
+        "category": "Category",
+        "addButton": "Add",
+        "addedExpenses": "Added Expenses",
+        "editExpense": "Edit Expense",
+        "editButton": "Edit",
+        "deleteButton": "Delete",
+        "deleteConfirmation": "Are you sure you want to delete this expense?",
+        "deleteSuccess": "Expense deleted successfully",
+        "deleteError": "Error deleting the expense",
+        "editSuccess": "Expense edited successfully",
+        "editError": "Error editing the expense",
+        "addSuccess": "Expense added successfully",
+        "addError": "Error adding the expense",
+        "noExpenses": "No expenses found",
+        "loading": "Loading expenses...",
+        "error": "Error loading expenses",
+        "close": "Close"
+    }
+}

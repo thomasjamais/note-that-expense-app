@@ -1,0 +1,28 @@
+{
+    "expenses": {
+        "title": "Dépenses",
+        "addLabel": "Ajouter une dépense",
+        "forTravel": "Pour le voyage actif",
+        "name": "Nom",
+        "expenseName": "Nom de la dépense",
+        "amountIn": "Montant en",
+        "date": "Date",
+        "category": "Catégorie",
+        "addButton": "Ajouter",
+        "addedExpenses": "Dépenses ajoutées",
+        "editExpense": "Modifier la dépense",
+        "editButton": "Modifier",
+        "deleteButton": "Supprimer",
+        "deleteConfirmation": "Êtes-vous sûr de vouloir supprimer cette dépense ?",
+        "deleteSuccess": "Dépense supprimée avec succès",
+        "deleteError": "Erreur lors de la suppression de la dépense",
+        "editSuccess": "Dépense modifiée avec succès",
+        "editError": "Erreur lors de la modification de la dépense",
+        "addSuccess": "Dépense ajoutée avec succès",
+        "addError": "Erreur lors de l'ajout de la dépense",
+        "noExpenses": "Aucune dépense trouvée",
+        "loading": "Chargement des dépenses...",
+        "error": "Erreur lors du chargement des dépenses",
+        "close": "Fermer"
+    }
+}

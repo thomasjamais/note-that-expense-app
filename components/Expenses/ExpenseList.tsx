@@ -2,6 +2,7 @@ import { TripWithCurrencies } from '@/hooks/useGetActiveTrip';
 import { Category } from '@/hooks/useGetCategories';
 import { useGetExpensesByTripId } from '@/hooks/useGetExpensesByTripId';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import HandleExpenseModal from './HandleExpenseModal';
 
@@ -11,6 +12,8 @@ type ExpenseListProps = {
 };
 
 export default function ExpenseList({ activeTrip, categories }: ExpenseListProps) {
+  const { t } = useTranslation();
+
   const { data: expensesForTrip } = useGetExpensesByTripId(activeTrip?.id || '');
   const [selectedExpense, setSelectedExpense] = useState<any | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -22,9 +25,9 @@ export default function ExpenseList({ activeTrip, categories }: ExpenseListProps
 
   return (
     <View>
-      <Text style={[styles.title, { marginTop: 24 }]}>Dépenses ajoutées</Text>
+      <Text style={[styles.title, { marginTop: 24 }]}>{t('expenses.addedExpenses')}</Text>
 
-      {expensesForTrip?.length === 0 && <Text>Aucune dépense pour le moment.</Text>}
+      {expensesForTrip?.length === 0 && <Text>{t('expenses.noExpenses')}</Text>}
 
       {expensesForTrip?.map((item) => (
         <TouchableOpacity

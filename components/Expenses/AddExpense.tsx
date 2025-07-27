@@ -13,11 +13,11 @@ type AddExpenseProps = {
 };
 
 export default function AddExpense({ activeTrip, categories }: AddExpenseProps) {
-  const { mutate: addExpenseMutation } = useAddExpense();
+  const { mutate: addExpenseMutation, isPending } = useAddExpense();
   const [label, setLabel] = useState('');
   const [bath, setBath] = useState('');
   const [date, setDate] = useState(new Date());
-  const [category, setCategory] = useState('Nourriture');
+  const [category, setCategory] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handleSubmit = () => {
@@ -87,7 +87,7 @@ export default function AddExpense({ activeTrip, categories }: AddExpenseProps) 
         ))}
       </Picker>
 
-      <Button title="Ajouter" onPress={handleSubmit} />
+      <Button title="Ajouter" onPress={handleSubmit} disabled={isPending} />
     </View>
   );
 }

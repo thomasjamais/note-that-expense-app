@@ -49,7 +49,8 @@ function RootLayoutNav() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack>
+          <Stack initialRouteName="SplashScreen">
+            <Stack.Screen name="SplashScreen" options={{ headerShown: false }} />
             <Stack.Screen name="main" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
           </Stack>

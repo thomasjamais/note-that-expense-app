@@ -14,7 +14,6 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import 'react-native-gesture-handler';
 import { TabBar, TabView } from 'react-native-tab-view';
 
 const routes = [

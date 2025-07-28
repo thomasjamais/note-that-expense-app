@@ -1,3 +1,4 @@
+import { ErrorBoundary } from '@/components/Error';
 import Line from '@/components/Line';
 import Pie from '@/components/Pie';
 import Colors from '@/constants/Colors';
@@ -41,29 +42,33 @@ export default function ChartsScreen() {
     switch (route.key) {
       case 'pie':
         return (
-          <ScrollView style={styles.chartContainer}>
-            <Pie
-              range={range}
-              customStart={customStart}
-              customEnd={customEnd}
-              selectedCategories={selectedCategories}
-              toggleCategory={toggleCategory}
-              setSelectedCategories={setSelectedCategories}
-            />
-          </ScrollView>
+          <ErrorBoundary>
+            <ScrollView style={styles.chartContainer}>
+              <Pie
+                range={range}
+                customStart={customStart}
+                customEnd={customEnd}
+                selectedCategories={selectedCategories}
+                toggleCategory={toggleCategory}
+                setSelectedCategories={setSelectedCategories}
+              />
+            </ScrollView>
+          </ErrorBoundary>
         );
       case 'line':
         return (
-          <ScrollView style={styles.chartContainer}>
-            <Line
-              range={range}
-              customStart={customStart}
-              customEnd={customEnd}
-              selectedCategories={selectedCategories}
-              toggleCategory={toggleCategory}
-              setSelectedCategories={setSelectedCategories}
-            />
-          </ScrollView>
+          <ErrorBoundary>
+            <ScrollView style={styles.chartContainer}>
+              <Line
+                range={range}
+                customStart={customStart}
+                customEnd={customEnd}
+                selectedCategories={selectedCategories}
+                toggleCategory={toggleCategory}
+                setSelectedCategories={setSelectedCategories}
+              />
+            </ScrollView>
+          </ErrorBoundary>
         );
       default:
         return null;
@@ -121,16 +126,22 @@ export default function ChartsScreen() {
         </View>
       )}
 
-      <TabView
-        style={styles.tabView}
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={{ width: layout.width }}
-        renderTabBar={(props) => (
-          <TabBar {...props} indicatorStyle={{ backgroundColor: primary }} style={styles.tabBar} />
-        )}
-      />
+      <ErrorBoundary>
+        <TabView
+          style={styles.tabView}
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={{ width: layout.width }}
+          renderTabBar={(props) => (
+            <TabBar
+              {...props}
+              indicatorStyle={{ backgroundColor: primary }}
+              style={styles.tabBar}
+            />
+          )}
+        />
+      </ErrorBoundary>
     </SafeAreaView>
   );
 }

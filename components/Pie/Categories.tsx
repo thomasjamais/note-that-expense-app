@@ -19,7 +19,7 @@ export default function Categories({
     if (pieChartData && selectedCategories.length === 0) {
       setSelectedCategories(pieChartData.map((c: any) => c.name));
     }
-  }, [pieChartData]);
+  }, [pieChartData, selectedCategories, setSelectedCategories]);
 
   return (
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 12 }}>

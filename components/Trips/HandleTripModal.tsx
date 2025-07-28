@@ -1,5 +1,5 @@
 // import { useDeleteTrip } from '@/hooks/trips/useDeleteTrip';
-import { Trip } from '@/app/main/TripsScreen/hook';
+import { Trip } from '@/components/TripsScreen/hook';
 import { useDeleteTrip } from '@/hooks/trips/useDeleteTrip';
 import { useUpdateTrip } from '@/hooks/trips/useUpdateTrip';
 import { useCurrencies } from '@/hooks/useGetCurrencies';

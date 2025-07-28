@@ -1,7 +1,7 @@
 import Colors from '@/constants/Colors';
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Trip, useListTrips } from '../../app/main/TripsScreen/hook';
+import { Trip, useListTrips } from '../TripsScreen/hook';
 import HandleTripModal from './HandleTripModal';
 
 export default function TripList() {

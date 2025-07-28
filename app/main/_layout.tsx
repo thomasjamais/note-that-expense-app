@@ -54,20 +54,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="CategoriesScreen/index"
-        options={{
-          title: 'Catégories',
-          tabBarIcon: ({ color }) => <TabBarIcon name="tag" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="TripsScreen/index"
-        options={{
-          title: 'Trips',
-          tabBarIcon: ({ color }) => <TabBarIcon name="book" color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name="Settings/index"
         options={{
           title: 'Settings',

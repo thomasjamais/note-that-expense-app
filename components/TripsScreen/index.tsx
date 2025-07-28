@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
-import AddTrip from '../../../components/Trips/AddTrip';
-import TripList from '../../../components/Trips/TripList';
+import AddTrip from '../Trips/AddTrip';
+import TripList from '../Trips/TripList';
 import { useAddTrip } from './hook';
 
 export default function TripsScreen() {

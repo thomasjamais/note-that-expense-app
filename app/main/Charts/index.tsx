@@ -1,3 +1,4 @@
+import DailyStats from '@/components/DailyStats';
 import { ErrorBoundary } from '@/components/Error';
 import Line from '@/components/Line';
 import Pie from '@/components/Pie';
@@ -17,6 +18,7 @@ import 'react-native-gesture-handler';
 import { TabBar, TabView } from 'react-native-tab-view';
 
 const routes = [
+  { key: 'dailyStats', title: 'Résumé du jour' },
   { key: 'pie', title: 'Répartition' },
   { key: 'line', title: 'Évolution' },
 ];
@@ -67,6 +69,14 @@ export default function ChartsScreen() {
                 toggleCategory={toggleCategory}
                 setSelectedCategories={setSelectedCategories}
               />
+            </ScrollView>
+          </ErrorBoundary>
+        );
+      case 'dailyStats':
+        return (
+          <ErrorBoundary>
+            <ScrollView style={styles.chartContainer}>
+              <DailyStats />
             </ScrollView>
           </ErrorBoundary>
         );
@@ -137,6 +147,8 @@ export default function ChartsScreen() {
             <TabBar
               {...props}
               indicatorStyle={{ backgroundColor: primary }}
+              activeColor={Colors.light.tint}
+              inactiveColor="#888"
               style={styles.tabBar}
             />
           )}

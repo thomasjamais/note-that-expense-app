@@ -20,6 +20,7 @@ export const useDeleteExpense = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['expenses'] });
       queryClient.invalidateQueries({ queryKey: ['charts'] });
+      queryClient.invalidateQueries({ queryKey: ['stats'] });
       showMessage('Dépense supprimée avec succès !', 'success');
     },
     onError: (error) => {

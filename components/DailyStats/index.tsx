@@ -1,4 +1,5 @@
 import { useGetDailyStats } from '@/hooks/stats/useGetDailyStats';
+import { useGetTripStats } from '@/hooks/stats/useGetTripStats';
 import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import Skeleton from '../Skeleton';
@@ -15,6 +16,7 @@ export default function DailyStats({}: DailyStatsProps) {
     isLoading: isDailyStatsLoading,
     isError,
   } = useGetDailyStats(activeTrip?.id);
+  const { data: tripStats } = useGetTripStats(activeTrip?.id);
 
   if (isError) {
     return (
@@ -36,6 +38,11 @@ export default function DailyStats({}: DailyStatsProps) {
   const date = new Date(dailyStats?.day ?? 0);
   const formattedDate = isNaN(date.getTime()) ? '' : date.toLocaleDateString();
 
+  const dailyAvg = dailyStats?.avgSpentConverted ?? 0;
+  const tripAvg = tripStats?.avgDailySpentConverted ?? 0;
+  const diff = dailyAvg - tripAvg;
+  const percent = ((diff / tripAvg) * 100).toFixed(1);
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Rapport du jour {formattedDate}</Text>
@@ -53,11 +60,21 @@ export default function DailyStats({}: DailyStatsProps) {
         <StatCard
           icon="bar-chart"
           label="Moyenne"
+          arrow={
+            (dailyStats?.avgSpentConverted ?? 0) > (tripStats?.avgDailySpentConverted ?? 0)
+              ? 'up'
+              : 'down'
+          }
+          tooltipTitle={
+            diff > 0
+              ? `En augmentation de ${percent}% (${diff.toFixed(2)} ${activeTrip?.homeCurrencySymbol})`
+              : `En diminution de ${Math.abs(Number(percent))}% (${Math.abs(diff).toFixed(2)} ${activeTrip?.homeCurrencySymbol})`
+          }
           value={`${Number(dailyStats?.avgSpentConverted).toFixed(2)} ${activeTrip?.homeCurrencySymbol}`}
         />
         <StatCard
           icon="star"
-          label="Max"
+          label="Plus grosse dépense"
           value={`${dailyStats?.maxSpentConverted} ${activeTrip?.homeCurrencySymbol}`}
         />
       </View>

@@ -24,6 +24,7 @@ export const useAddExpense = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['expenses'] });
       queryClient.invalidateQueries({ queryKey: ['charts'] });
+      queryClient.invalidateQueries({ queryKey: ['stats'] });
       showMessage('Dépense ajoutée avec succès !', 'success');
     },
     onError: (error) => {

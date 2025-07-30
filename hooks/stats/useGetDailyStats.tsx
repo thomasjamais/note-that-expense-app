@@ -17,7 +17,7 @@ export type DailyStats = {
 
 export const useGetDailyStats = (tripId?: string) => {
   return useQuery<DailyStats>({
-    queryKey: ['stats', tripId],
+    queryKey: ['stats', tripId, 'daily'],
     queryFn: async () => {
       const { data } = await api.get(`/expenses/trip/${tripId}/stats/daily`);
       return data;

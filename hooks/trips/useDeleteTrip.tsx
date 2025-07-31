@@ -19,6 +19,7 @@ export const useDeleteTrip = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['trips'] });
       queryClient.invalidateQueries({ queryKey: ['charts'] });
+      queryClient.invalidateQueries({ queryKey: ['stats'] });
       showMessage('Voyage supprimé avec succès !', 'success');
     },
     onError: (error) => {

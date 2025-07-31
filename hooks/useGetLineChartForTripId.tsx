@@ -33,8 +33,6 @@ export const useGetLineChartForTripId = (
       }
       const { data } = await api.get(url);
 
-      console.log('Line chart data:', data);
-
       return data;
     },
     staleTime: TIME.FIVE_MINUTES_IN_MILLISECONDS,

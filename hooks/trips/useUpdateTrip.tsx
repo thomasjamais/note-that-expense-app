@@ -26,6 +26,7 @@ export const useUpdateTrip = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['trips'] });
       queryClient.invalidateQueries({ queryKey: ['charts'] });
+      queryClient.invalidateQueries({ queryKey: ['stats'] });
       showMessage('Voyage mis à jour avec succès !', 'success');
     },
     onError: (error) => {

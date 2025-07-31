@@ -50,7 +50,7 @@ export default function TripStats({}: TripStatsProps) {
       <View style={styles.row}>
         <StatCard
           icon="bar-chart"
-          label="Moyenne"
+          label="Moyenne journalière"
           value={`${Number(tripStats?.avgDailySpentConverted).toFixed(2)} ${activeTrip?.homeCurrencySymbol}`}
         />
         <StatCard

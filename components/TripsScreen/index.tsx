@@ -6,11 +6,10 @@ import { useAddTrip } from './hook';
 
 export default function TripsScreen() {
   const addTripMutation = useAddTrip();
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <AddTrip onAdd={(values) => addTripMutation.mutate(values)} />
       <TripList />
+      <AddTrip onAdd={(values) => addTripMutation.mutate(values)} />
     </ScrollView>
   );
 }

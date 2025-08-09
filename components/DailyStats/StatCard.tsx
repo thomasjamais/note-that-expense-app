@@ -12,20 +12,22 @@ export default function StatCard({
   value,
   arrow,
   tooltipTitle,
+  color = '#555',
 }: {
   icon: React.ComponentProps<typeof FontAwesome>['name'];
   label: string;
   value: string;
   arrow?: 'up' | 'down';
   tooltipTitle?: string;
+  color?: string;
 }) {
   const arrowIcon = arrow === 'up' ? 'arrow-up' : arrow === 'down' ? 'arrow-down' : null;
   const arrowColor = arrow === 'up' ? PASTEL_RED : PASTEL_GREEN;
-  const rotation = arrow === 'up' ? '225deg' : '-45deg';
+  const rotation = arrow === 'up' ? '-315deg' : '-225deg';
 
   return (
     <View style={styles.card}>
-      <FontAwesome name={icon} size={24} color="#555" />
+      <FontAwesome name={icon} size={24} color={color} />
 
       {arrowIcon && tooltipTitle ? (
         <Tooltip title={tooltipTitle} enterTouchDelay={1}>

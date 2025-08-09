@@ -1,6 +1,8 @@
+import { useGetCurrentBudgetUsageByTripId } from '@/hooks/budgets/useGetCurrentBudgetUsageByTripId';
 import { useGetTripStats } from '@/hooks/stats/useGetTripStats';
 import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import BudgetMain from '../Budgets/BudgetMain';
 import StatCard from '../DailyStats/StatCard';
 import Skeleton from '../Skeleton';
 
@@ -15,6 +17,11 @@ export default function TripStats({}: TripStatsProps) {
     isLoading: isTripStatsLoading,
     isError,
   } = useGetTripStats(activeTrip?.id);
+  const {
+    data: budgetUsage,
+    isLoading: isBudgetUsageLoading,
+    isError: isBudgetUsageError,
+  } = useGetCurrentBudgetUsageByTripId(activeTrip?.id);
 
   if (isError) {
     return (
@@ -59,6 +66,11 @@ export default function TripStats({}: TripStatsProps) {
           value={`${tripStats?.maxDailySpentConverted} ${activeTrip?.homeCurrencySymbol}`}
         />
       </View>
+      <BudgetMain
+        budgetUsage={budgetUsage}
+        isBudgetUsageLoading={isBudgetUsageLoading}
+        isBudgetUsageError={isBudgetUsageError}
+      />
     </View>
   );
 }

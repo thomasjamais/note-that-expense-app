@@ -1,7 +1,9 @@
+import { useGetCurrentBudgetUsageByTripId } from '@/hooks/budgets/useGetCurrentBudgetUsageByTripId';
 import { useGetDailyStats } from '@/hooks/stats/useGetDailyStats';
 import { useGetTripStats } from '@/hooks/stats/useGetTripStats';
 import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import BudgetProgressCircle from '../Budgets/BudgetProgress';
 import Skeleton from '../Skeleton';
 import StatCard from './StatCard';
 
@@ -17,7 +19,10 @@ export default function DailyStats({}: DailyStatsProps) {
     isError,
   } = useGetDailyStats(activeTrip?.id);
   const { data: tripStats } = useGetTripStats(activeTrip?.id);
+  const { data: budgetUsage } = useGetCurrentBudgetUsageByTripId(activeTrip?.id);
 
+  const budgetSpentToday = dailyStats?.totalSpentConverted ?? 0;
+  const budgetAmount = Number(budgetUsage?.budgetAmount ?? 0) / (tripStats?.dayCount ?? 1);
   if (isError) {
     return (
       <View>
@@ -46,30 +51,24 @@ export default function DailyStats({}: DailyStatsProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Rapport du jour {formattedDate}</Text>
-
       <View style={styles.row}>
         <StatCard icon="list" label="Dépenses" value={`${dailyStats?.expenseCount}`} />
         <StatCard
           icon="money"
           label="Total"
           value={`${dailyStats?.totalSpentConverted} ${activeTrip?.homeCurrencySymbol}`}
+          arrow={(diff ?? 0) > 0 ? 'up' : 'down'}
+          tooltipTitle={
+            (diff ?? 0) > 0
+              ? `En augmentation de ${percent}% (${diff.toFixed(2)} ${activeTrip?.homeCurrencySymbol})`
+              : `En diminution de ${Math.abs(Number(percent))}% (${Math.abs(diff).toFixed(2)} ${activeTrip?.homeCurrencySymbol})`
+          }
         />
       </View>
-
       <View style={styles.row}>
         <StatCard
           icon="bar-chart"
           label="Moyenne"
-          arrow={
-            (dailyStats?.avgSpentConverted ?? 0) > (tripStats?.avgDailySpentConverted ?? 0)
-              ? 'up'
-              : 'down'
-          }
-          tooltipTitle={
-            diff > 0
-              ? `En augmentation de ${percent}% (${diff.toFixed(2)} ${activeTrip?.homeCurrencySymbol})`
-              : `En diminution de ${Math.abs(Number(percent))}% (${Math.abs(diff).toFixed(2)} ${activeTrip?.homeCurrencySymbol})`
-          }
           value={`${Number(dailyStats?.avgSpentConverted).toFixed(2)} ${activeTrip?.homeCurrencySymbol}`}
         />
         <StatCard
@@ -78,10 +77,15 @@ export default function DailyStats({}: DailyStatsProps) {
           value={`${dailyStats?.maxSpentConverted} ${activeTrip?.homeCurrencySymbol}`}
         />
       </View>
-
       <View style={styles.row}>
         <StatCard icon="tags" label="Top catégorie" value={dailyStats!.topCategory} />
       </View>
+      <BudgetProgressCircle
+        name="Dépenses comparées au budget"
+        spent={Number(budgetSpentToday)}
+        amount={Number(budgetAmount)}
+        currencySymbol={activeTrip?.homeCurrencySymbol}
+      />
     </View>
   );
 }

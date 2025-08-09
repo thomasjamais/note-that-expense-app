@@ -29,6 +29,8 @@ export const useUpdateExpense = () => {
       queryClient.invalidateQueries({ queryKey: ['expenses'] });
       queryClient.invalidateQueries({ queryKey: ['charts'] });
       queryClient.invalidateQueries({ queryKey: ['stats'] });
+      queryClient.invalidateQueries({ queryKey: ['budgets', 'usage'] });
+
       showMessage('Dépense mise à jour avec succès !', 'success');
     },
     onError: (error) => {

@@ -1,12 +1,15 @@
-// import { useDeleteTrip } from '@/hooks/trips/useDeleteTrip';
 import { Trip } from '@/components/TripsScreen/hook';
+import { useAddBudget } from '@/hooks/budgets/useAddBudget';
+import { useGetBudgets } from '@/hooks/budgets/useGetBudgetsByTripId';
 import { useDeleteTrip } from '@/hooks/trips/useDeleteTrip';
 import { useUpdateTrip } from '@/hooks/trips/useUpdateTrip';
 import { useCurrencies } from '@/hooks/useGetCurrencies';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import { useEffect, useState } from 'react';
-import { Modal, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
+import { Modal, ScrollView, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
+import AddBudgetModal from '../Budgets/AddBudgetModal';
+import BudgetList from '../Budgets/BudgetList';
 import Button from '../Button';
 
 type HandleTripModalProps = {
@@ -20,9 +23,11 @@ export default function HandleTripModal({
   modalVisible,
   setModalInvisible,
 }: HandleTripModalProps) {
-  console.log('selectedTrip', selectedTrip);
   const { mutate: deleteTripForTripMutation } = useDeleteTrip();
   const { mutate: updateTripForTripMutation } = useUpdateTrip();
+  const { data: budgets = [] } = useGetBudgets(selectedTrip.id);
+  const { mutate: addBudget } = useAddBudget();
+  const [showAddBudgetModal, setShowAddBudgetModal] = useState(false);
   const { data: currencies } = useCurrencies();
 
   const [label, setLabel] = useState(selectedTrip?.label || '');
@@ -75,7 +80,7 @@ export default function HandleTripModal({
   return (
     <Modal visible={modalVisible} animationType="slide" transparent>
       <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
+        <ScrollView contentContainerStyle={styles.scrollContent} style={styles.modalContent}>
           <Text style={styles.label}>Nom du trip</Text>
           <TextInput
             style={styles.input}
@@ -154,10 +159,20 @@ export default function HandleTripModal({
             <Text style={styles.label}>Trip actif</Text>
             <Switch value={isActive} onValueChange={setIsActive} />
           </View>
+          <View style={{ marginTop: 24 }}>
+            <BudgetList budgets={budgets} />
+            <Button title="Ajouter un budget" onPress={() => setShowAddBudgetModal(true)} />
+          </View>
+
+          <AddBudgetModal
+            visible={showAddBudgetModal}
+            onClose={() => setShowAddBudgetModal(false)}
+            onAdd={(data) => addBudget({ ...data, tripId: selectedTrip.id })}
+          />
           <Button variant="success" title="Sauvegarder" onPress={handleSave} />
           <Button variant="error" title="Supprimer" onPress={handleDelete} />
           <Button title="Fermer" onPress={() => setModalInvisible()} />
-        </View>
+        </ScrollView>
       </View>
     </Modal>
   );
@@ -181,9 +196,13 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#fff',
-    padding: 20,
     borderRadius: 8,
-    width: '80%',
+    width: '90%',
+    margin: 'auto',
+  },
+  scrollContent: {
+    padding: 20,
+    paddingBottom: 40,
   },
   input: {
     borderWidth: 1,

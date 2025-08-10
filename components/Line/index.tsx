@@ -1,6 +1,7 @@
 import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
 import { useGetLineChartForTripId } from '@/hooks/useGetLineChartForTripId';
 import { PeriodRange } from '@/hooks/useGetPieChartForTripId';
+import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 import Categories from './Categories';
 import Chart from './Chart';
@@ -22,6 +23,8 @@ export default function Line({
   toggleCategory,
   setSelectedCategories,
 }: LineProps) {
+  const { t } = useTranslation();
+
   const { data: activeTripId } = useGetActiveTrip();
 
   const { data: stackedBarData } = useGetLineChartForTripId(
@@ -36,7 +39,7 @@ export default function Line({
   return (
     <View style={{ marginTop: 24 }}>
       <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: 'bold', marginBottom: 8 }}>
-        Dépenses journalières
+        {t('line.title')}
       </Text>
       <Categories
         stackedBarData={stackedBarData}

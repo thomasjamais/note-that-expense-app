@@ -1,4 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
+
 import axios from 'axios';
 
 type LogoutHandler = () => void;
@@ -38,5 +40,15 @@ api.interceptors.response.use(
     return Promise.reject(err);
   },
 );
+
+api.interceptors.request.use(async (config) => {
+  const state = await NetInfo.fetch();
+  if (!state.isConnected) {
+    const err: any = new Error('OFFLINE');
+    err.code = 'OFFLINE';
+    throw err;
+  }
+  return config;
+});
 
 export default api;

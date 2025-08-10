@@ -1,4 +1,6 @@
+import { BudgetUsage } from '@/hooks/budgets/useGetCurrentBudgetUsageByTripId';
 import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
+import { useTranslation } from 'react-i18next';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import BudgetProgressCircle from '../Budgets/BudgetProgress';
 import StatCard from '../DailyStats/StatCard';
@@ -7,7 +9,7 @@ import Skeleton from '../Skeleton';
 const screenWidth = Dimensions.get('window').width;
 
 type BudgetMainProps = {
-  budgetUsage: any;
+  budgetUsage?: BudgetUsage;
   isBudgetUsageLoading: boolean;
   isBudgetUsageError: boolean;
 };
@@ -22,14 +24,14 @@ export default function BudgetMain({
   isBudgetUsageLoading,
   isBudgetUsageError,
 }: BudgetMainProps) {
+  const { t } = useTranslation();
+
   const { data: activeTrip } = useGetActiveTrip();
 
   return (
     <View style={styles.container}>
       {isBudgetUsageError && (
-        <Text style={{ color: 'red', textAlign: 'center' }}>
-          Erreur lors du chargement du budget
-        </Text>
+        <Text style={{ color: 'red', textAlign: 'center' }}>{t('budgets.errorOne')}</Text>
       )}
       {isBudgetUsageLoading && (
         <View style={{ alignItems: 'center', marginVertical: 20 }}>
@@ -41,9 +43,11 @@ export default function BudgetMain({
       {budgetUsage && (
         <View>
           {budgetUsage.scope === 'total' ? (
-            <Text style={styles.header}>Budget total pour ce voyage</Text>
+            <Text style={styles.header}>{t('budgets.totalBudget')}</Text>
           ) : (
-            <Text style={styles.header}>Budget sur le mois en cours ({getCurrentMonth()})</Text>
+            <Text style={styles.header}>
+              {t('budgets.monthlyBudget', { month: getCurrentMonth() })}
+            </Text>
           )}
           <BudgetProgressCircle
             name={budgetUsage?.name}
@@ -55,20 +59,20 @@ export default function BudgetMain({
           <View style={styles.row}>
             <StatCard
               icon="money"
-              label="Budget prévu"
+              label={t('budgets.plannedBudget')}
               value={`${budgetUsage?.budgetAmount} ${activeTrip?.homeCurrencySymbol}`}
             />
-            {budgetUsage?.spentConverted > budgetUsage?.budgetAmount ? (
+            {Number(budgetUsage?.spentConverted) > Number(budgetUsage?.budgetAmount) ? (
               <StatCard
                 icon="exclamation-circle"
-                label="Dépenses dépassées"
-                value={`${budgetUsage?.spentConverted - budgetUsage?.budgetAmount} ${activeTrip?.homeCurrencySymbol}`}
+                label={t('budgets.overpassed')}
+                value={`${Number(budgetUsage?.spentConverted) - Number(budgetUsage?.budgetAmount) || 0} ${activeTrip?.homeCurrencySymbol}`}
                 color="#FF0000"
               />
             ) : (
               <StatCard
                 icon="check-circle"
-                label="Dépenses dans le budget"
+                label={t('budgets.expenses')}
                 value={`${budgetUsage?.spentConverted} ${activeTrip?.homeCurrencySymbol}`}
               />
             )}

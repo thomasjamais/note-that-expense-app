@@ -11,13 +11,16 @@ import { Stack } from 'expo-router';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
+import OfflineBanner from '@/components/OfflineBanner';
 import { useColorScheme } from '@/components/useColorScheme';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { SnackbarProvider } from '@/contexts/SnackbarContext';
-import { queryClient } from '@/lib/queryClient';
+import NetInfo from '@react-native-community/netinfo';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { PaperProvider } from 'react-native-paper';
+import { flushExpenses } from '../lib/offlineQueue';
+import { queryClient } from '../lib/queryClient';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -30,6 +33,16 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      if (state.isConnected) {
+        flushExpenses();
+        queryClient.invalidateQueries();
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (error) throw error;
@@ -53,6 +66,7 @@ function RootLayoutNav() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <OfflineBanner />
       <PaperProvider>
         <SnackbarProvider>
           <AuthProvider>

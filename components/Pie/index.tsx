@@ -2,6 +2,7 @@ import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
 import { PeriodRange, useGetPieChartForTripId } from '@/hooks/useGetPieChartForTripId';
 import { getNumberOfDaysInRange } from '@/utils/dates';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Dimensions, Text, View } from 'react-native';
 import Skeleton from '../Skeleton';
 import Categories from './Categories';
@@ -27,6 +28,7 @@ export default function Pie({
   toggleCategory,
   setSelectedCategories,
 }: PieProps) {
+  const { t } = useTranslation();
   const { data: activeTrip } = useGetActiveTrip();
 
   const {
@@ -52,9 +54,7 @@ export default function Pie({
   if (isError) {
     return (
       <View>
-        <Text style={{ textAlign: 'center', color: 'red' }}>
-          Une erreur est survenue lors du chargement des données.
-        </Text>
+        <Text style={{ textAlign: 'center', color: 'red' }}>{t('pie.error')}</Text>
       </View>
     );
   }
@@ -62,7 +62,7 @@ export default function Pie({
   return (
     <View>
       <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: 'bold', marginBottom: 8 }}>
-        Répartition des dépenses
+        {t('pie.title')}
       </Text>
 
       {isLoading || !filteredData?.length ? (
@@ -81,15 +81,18 @@ export default function Pie({
           />
 
           <Text>
-            Total dépensé sur la période :{' '}
-            {filteredData.reduce((total, item) => item.population + total, 0).toFixed(2)}{' '}
+            {t('pie.totalOnPeriod', {
+              total: filteredData.reduce((total, item) => item.population + total, 0).toFixed(2),
+            })}{' '}
             {activeTrip?.homeCurrencySymbol}
           </Text>
           <Text style={{ marginBottom: 10 }}>
-            Montant par jour :{' '}
-            {(
-              filteredData.reduce((total, item) => item.population + total, 0) / numberOfDaysInRange
-            ).toFixed(2)}{' '}
+            {t('pie.amountPerDay', {
+              amount: (
+                filteredData.reduce((total, item) => item.population + total, 0) /
+                numberOfDaysInRange
+              ).toFixed(2),
+            })}{' '}
             {activeTrip?.homeCurrencySymbol}
           </Text>
 

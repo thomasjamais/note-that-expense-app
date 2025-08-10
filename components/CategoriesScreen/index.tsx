@@ -1,5 +1,6 @@
 import { useGetCategories } from '@/hooks/useGetCategories';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Alert,
   Button,
@@ -21,6 +22,7 @@ type Category = {
 };
 
 export default function CategoriesScreen() {
+  const { t } = useTranslation();
   const { data: categories } = useGetCategories();
   const { mutate: addCategoryMutation } = useAddCategory();
   const { mutate: deleteCategoryMutation } = useDeleteCategory();
@@ -50,10 +52,10 @@ export default function CategoriesScreen() {
   };
 
   const handleDelete = (id: string) => {
-    Alert.alert('Supprimer ?', 'Supprimer cette catégorie ?', [
-      { text: 'Annuler', style: 'cancel' },
+    Alert.alert(t('categories.deleteConfirmation'), t('categories.deleteMessage'), [
+      { text: t('categories.cancel'), style: 'cancel' },
       {
-        text: 'Supprimer',
+        text: t('categories.deleteCategory'),
         style: 'destructive',
         onPress: () => {
           deleteCategoryMutation(id);
@@ -75,22 +77,22 @@ export default function CategoriesScreen() {
         onPress={() => setShowPicker(true)}
         style={[styles.previewColor, { backgroundColor: color }]}
       >
-        <Text style={styles.previewText}>Choisir la couleur</Text>
+        <Text style={styles.previewText}>{t('categories.categoryColor')}</Text>
       </TouchableOpacity>
 
       <View style={{ marginTop: 12 }}>
         <Button
-          title={editingId ? 'Modifier la catégorie' : 'Ajouter la catégorie'}
+          title={editingId ? t('categories.editCategory') : t('categories.addCategory')}
           onPress={handleAddOrUpdate}
         />
         {editingId && (
           <View style={{ marginTop: 8 }}>
-            <Button title="Annuler" color="#888" onPress={resetForm} />
+            <Button title={t('categories.cancel')} color="#888" onPress={resetForm} />
           </View>
         )}
       </View>
 
-      <Text style={[styles.title, { marginTop: 24 }]}>Catégories</Text>
+      <Text style={[styles.title, { marginTop: 24 }]}>{t('categories.title')}</Text>
       <FlatList
         data={categories}
         keyExtractor={(item) => item.id}

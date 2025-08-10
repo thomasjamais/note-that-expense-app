@@ -1,10 +1,12 @@
 import Colors from '@/constants/Colors';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Trip, useListTrips } from '../TripsScreen/hook';
 import HandleTripModal from './HandleTripModal';
 
 export default function TripList() {
+  const { t } = useTranslation();
   const { data: trips, isLoading, isError } = useListTrips();
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -15,20 +17,20 @@ export default function TripList() {
   };
 
   if (isLoading) {
-    return <Text>Chargement des trips...</Text>;
+    return <Text>{t('trips.loading')}</Text>;
   }
 
   if (isError) {
-    return <Text>Erreur lors du chargement des trips.</Text>;
+    return <Text>{t('trips.error')}</Text>;
   }
 
   if (trips?.length === 0) {
-    return <Text>Aucun trip pour l’instant.</Text>;
+    return <Text>{t('trips.noTrips')}</Text>;
   }
 
   return (
     <View>
-      <Text style={styles.title}>Liste des trips</Text>
+      <Text style={styles.title}>{t('trips.listTitle')}</Text>
       {trips?.map((item) => (
         <TouchableOpacity
           key={item.id}
@@ -40,7 +42,7 @@ export default function TripList() {
           onPress={() => handleTripPress(item)}
         >
           <Text style={styles.label}>
-            {item.label} {item.isActive ? '(Actif)' : ''}
+            {item.label} {item.isActive ? t('trips.isActive') : ''}
           </Text>
           <Text>{new Date(item.startDate).toLocaleDateString()}</Text>
         </TouchableOpacity>

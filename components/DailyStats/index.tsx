@@ -2,6 +2,7 @@ import { useGetCurrentBudgetUsageByTripId } from '@/hooks/budgets/useGetCurrentB
 import { useGetDailyStats } from '@/hooks/stats/useGetDailyStats';
 import { useGetTripStats } from '@/hooks/stats/useGetTripStats';
 import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
+import { useTranslation } from 'react-i18next';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import BudgetProgressCircle from '../Budgets/BudgetProgress';
 import Skeleton from '../Skeleton';
@@ -18,6 +19,8 @@ export default function DailyStats({}: DailyStatsProps) {
     isLoading: isDailyStatsLoading,
     isError,
   } = useGetDailyStats(activeTrip?.id);
+  const { t } = useTranslation();
+
   const { data: tripStats } = useGetTripStats(activeTrip?.id);
   const { data: budgetUsage } = useGetCurrentBudgetUsageByTripId(activeTrip?.id);
 
@@ -26,7 +29,7 @@ export default function DailyStats({}: DailyStatsProps) {
   if (isError) {
     return (
       <View>
-        <Text>Vous n'avez pas encore de dépenses aujourd'hui</Text>
+        <Text>{t('dailyStats.error')}</Text>
       </View>
     );
   }
@@ -50,38 +53,50 @@ export default function DailyStats({}: DailyStatsProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Rapport du jour {formattedDate}</Text>
+      <Text style={styles.header}>{t('dailyStats.dailyDigest', { date: formattedDate })}</Text>
       <View style={styles.row}>
-        <StatCard icon="list" label="Dépenses" value={`${dailyStats?.expenseCount}`} />
+        <StatCard
+          icon="list"
+          label={t('dailyStats.expenses')}
+          value={`${dailyStats?.expenseCount}`}
+        />
         <StatCard
           icon="money"
-          label="Total"
+          label={t('dailyStats.total')}
           value={`${dailyStats?.totalSpentConverted} ${activeTrip?.homeCurrencySymbol}`}
           arrow={(diff ?? 0) > 0 ? 'up' : 'down'}
           tooltipTitle={
             (diff ?? 0) > 0
-              ? `En augmentation de ${percent}% (${diff.toFixed(2)} ${activeTrip?.homeCurrencySymbol})`
-              : `En diminution de ${Math.abs(Number(percent))}% (${Math.abs(diff).toFixed(2)} ${activeTrip?.homeCurrencySymbol})`
+              ? t('dailyStats.up', {
+                  diff: `${percent}% (${diff.toFixed(2)} ${activeTrip?.homeCurrencySymbol})`,
+                })
+              : t('dailyStats.down', {
+                  diff: `${Math.abs(Number(percent))}% (${Math.abs(diff).toFixed(2)} ${activeTrip?.homeCurrencySymbol})`,
+                })
           }
         />
       </View>
       <View style={styles.row}>
         <StatCard
           icon="bar-chart"
-          label="Moyenne"
+          label={t('dailyStats.average')}
           value={`${Number(dailyStats?.avgSpentConverted).toFixed(2)} ${activeTrip?.homeCurrencySymbol}`}
         />
         <StatCard
           icon="star"
-          label="Plus grosse dépense"
+          label={t('dailyStats.biggest')}
           value={`${dailyStats?.maxSpentConverted} ${activeTrip?.homeCurrencySymbol}`}
         />
       </View>
       <View style={styles.row}>
-        <StatCard icon="tags" label="Top catégorie" value={dailyStats!.topCategory} />
+        <StatCard
+          icon="tags"
+          label={t('dailyStats.topCategory')}
+          value={dailyStats?.topCategory || 'NC'}
+        />
       </View>
       <BudgetProgressCircle
-        name="Dépenses comparées au budget"
+        name={t('dailyStats.budgetComparison')}
         spent={Number(budgetSpentToday)}
         amount={Number(budgetAmount)}
         currencySymbol={activeTrip?.homeCurrencySymbol}

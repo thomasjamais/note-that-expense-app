@@ -1,6 +1,7 @@
 import { useEditBudget } from '@/hooks/budgets/useEditBudget';
 import { Budgets } from '@/hooks/budgets/useGetBudgetsByTripId';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import EditBudgetModal from './EditBudgetModal';
 type BudgetListProps = {
@@ -8,16 +9,17 @@ type BudgetListProps = {
 };
 
 export default function BudgetList({ budgets }: BudgetListProps) {
+  const { t } = useTranslation();
   const { mutate: updateBudget } = useEditBudget();
   const [showEditBudgetModal, setShowEditBudgetModal] = useState(false);
 
   if (!budgets.length) {
-    return <Text>Aucun budget pour ce trip.</Text>;
+    return <Text>{t('budgets.noBudgets')}</Text>;
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Budgets du trip</Text>
+      <Text style={styles.title}>{t('budgets.tripBudgets')}</Text>
       {budgets.map((item) => (
         <TouchableOpacity
           key={item.id}
@@ -25,7 +27,7 @@ export default function BudgetList({ budgets }: BudgetListProps) {
           onPress={() => setShowEditBudgetModal(true)}
         >
           <Text style={styles.budgetName}>
-            {item.name} ({item.scope === 'total' ? 'Total' : 'Mensuel'})
+            {item.name} ({item.scope === 'total' ? t('budgets.total') : t('budgets.monthly')})
           </Text>
           <Text style={styles.amount}>{item.amount}</Text>
           {item.scope === 'monthly' && item.startDate && item.endDate && (
@@ -45,11 +47,6 @@ export default function BudgetList({ budgets }: BudgetListProps) {
             }}
             budget={item}
           />
-          {/* {typeof item.spentConverted === 'number' && (
-            <Text style={styles.spent}>
-              Dépensé : {item.spentConverted} {item.currencySymbol}
-            </Text>
-          )} */}
         </TouchableOpacity>
       ))}
     </View>

@@ -1,8 +1,11 @@
+import { useSnackbar } from '@/contexts/SnackbarContext';
 import { useAddExpense } from '@/hooks/expenses/useAddExpense';
 import { TripWithCurrencies } from '@/hooks/useGetActiveTrip';
 import { Category } from '@/hooks/useGetCategories';
+import { queueExpense } from '@/lib/offlineQueue';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
+import { onlineManager } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -15,8 +18,10 @@ type AddExpenseProps = {
 
 export default function AddExpense({ activeTrip, categories }: AddExpenseProps) {
   const { t } = useTranslation();
+  const online = onlineManager.isOnline();
+  const { showMessage } = useSnackbar();
 
-  const { mutate: addExpenseMutation, isPending } = useAddExpense();
+  const { mutate: addExpenseMutation, isPending, isPaused, isIdle } = useAddExpense();
   const [label, setLabel] = useState('');
   const [bath, setBath] = useState('');
   const [date, setDate] = useState(new Date());
@@ -29,13 +34,24 @@ export default function AddExpense({ activeTrip, categories }: AddExpenseProps) 
       return;
     }
 
-    addExpenseMutation({
-      categoryId: category,
-      tripId: activeTrip?.id || '',
-      label,
-      originalAmount: parseFloat(bath),
-      date,
-    });
+    if (!online) {
+      queueExpense({
+        categoryId: category,
+        tripId: activeTrip?.id || '',
+        label,
+        originalAmount: parseFloat(bath),
+        date,
+      });
+      showMessage('Dépense enregistrée en local', 'success');
+    } else {
+      addExpenseMutation({
+        categoryId: category,
+        tripId: activeTrip?.id || '',
+        label,
+        originalAmount: parseFloat(bath),
+        date,
+      });
+    }
   };
 
   return (

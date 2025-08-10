@@ -1,6 +1,7 @@
 import Button from '@/components/Button';
 import { Budgets } from '@/hooks/budgets/useGetBudgetsByTripId';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
 
 type EditBudgetModalProps = {
@@ -16,13 +17,14 @@ export default function EditBudgetModal({
   onEdit,
   budget,
 }: EditBudgetModalProps) {
+  const { t } = useTranslation();
   const [name, setName] = useState(budget.name);
   const [amount, setAmount] = useState(budget.amount.toString());
   const [scope, setScope] = useState<'total' | 'monthly'>(budget.scope);
 
   const handleSubmit = () => {
     if (!name || !amount) {
-      alert('Merci de remplir tous les champs obligatoires.');
+      alert(t('budgets.addOrEdit.fieldsRequired'));
       return;
     }
 
@@ -44,12 +46,12 @@ export default function EditBudgetModal({
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Text style={styles.title}>Modifier un budget</Text>
+          <Text style={styles.title}>{t('budgets.addOrEdit.title')}</Text>
 
-          <Text>Nom</Text>
+          <Text>{t('budgets.addOrEdit.name')}</Text>
           <TextInput style={styles.input} value={name} onChangeText={setName} />
 
-          <Text>Montant</Text>
+          <Text>{t('budgets.addOrEdit.amount')}</Text>
           <TextInput
             style={styles.input}
             value={amount}
@@ -58,15 +60,15 @@ export default function EditBudgetModal({
           />
 
           <View style={styles.switchContainer}>
-            <Text>Mensuel ?</Text>
+            <Text>{t('budgets.addOrEdit.monthly')} ?</Text>
             <Switch
               value={scope === 'monthly'}
               onValueChange={(value) => setScope(value ? 'monthly' : 'total')}
             />
           </View>
 
-          <Button title="Modifier" onPress={handleSubmit} />
-          <Button title="Annuler" onPress={onClose} variant="error" />
+          <Button title={t('budgets.editButton')} onPress={handleSubmit} />
+          <Button title={t('budgets.cancel')} onPress={onClose} variant="error" />
         </View>
       </View>
     </Modal>

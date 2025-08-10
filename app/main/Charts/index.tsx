@@ -6,17 +6,12 @@ import TripStats from '@/components/TripStats';
 import Colors from '@/constants/Colors';
 import { PeriodRange } from '@/hooks/useGetPieChartForTripId';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet, useWindowDimensions } from 'react-native';
 import { TabBar, TabView } from 'react-native-tab-view';
 
-const routes = [
-  { key: 'tripStats', title: 'Voyage' },
-  { key: 'dailyStats', title: 'Journée' },
-  { key: 'pie', title: 'Types' },
-  { key: 'line', title: 'Évolution' },
-];
-
 export default function ChartsScreen() {
+  const { t } = useTranslation();
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
 
@@ -32,6 +27,13 @@ export default function ChartsScreen() {
       prev.includes(name) ? prev.filter((cat) => cat !== name) : [...prev, name],
     );
   };
+
+  const routes = [
+    { key: 'tripStats', title: t('tabs.trips') },
+    { key: 'dailyStats', title: t('tabs.daily') },
+    { key: 'pie', title: t('tabs.pie') },
+    { key: 'line', title: t('tabs.line') },
+  ];
 
   const renderScene = ({ route }: { route: { key: string } }) => {
     switch (route.key) {

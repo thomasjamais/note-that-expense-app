@@ -1,5 +1,6 @@
 import Button from '@/components/Button';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
 
 type AddBudgetModalProps = {
@@ -9,13 +10,14 @@ type AddBudgetModalProps = {
 };
 
 export default function AddBudgetModal({ visible, onClose, onAdd }: AddBudgetModalProps) {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
   const [scope, setScope] = useState<'total' | 'monthly'>('total');
 
   const handleSubmit = () => {
     if (!name || !amount) {
-      alert('Merci de remplir tous les champs obligatoires.');
+      alert(t('budgets.addOrEdit.fieldsRequired'));
       return;
     }
 
@@ -36,12 +38,12 @@ export default function AddBudgetModal({ visible, onClose, onAdd }: AddBudgetMod
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Text style={styles.title}>Ajouter un budget</Text>
+          <Text style={styles.title}>{t('budgets.addOrEdit.title')}</Text>
 
-          <Text>Nom</Text>
+          <Text>{t('budgets.addOrEdit.name')}</Text>
           <TextInput style={styles.input} value={name} onChangeText={setName} />
 
-          <Text>Montant</Text>
+          <Text>{t('budgets.addOrEdit.amount')}</Text>
           <TextInput
             style={styles.input}
             value={amount}
@@ -50,60 +52,15 @@ export default function AddBudgetModal({ visible, onClose, onAdd }: AddBudgetMod
           />
 
           <View style={styles.switchContainer}>
-            <Text>Mensuel ?</Text>
+            <Text>{t('budgets.addOrEdit.monthly')} ?</Text>
             <Switch
               value={scope === 'monthly'}
               onValueChange={(value) => setScope(value ? 'monthly' : 'total')}
             />
           </View>
 
-          {scope === 'monthly' && (
-            <>
-              {/* <Text>Choisir un mois</Text>
-              <View style={styles.picker}>
-                {MONTHS.map((month) => (
-                  <Button
-                    key={month}
-                    title={getMonthName(month)}
-                    onPress={() => {
-                      const date = new Date(startDate);
-                      date.setMonth(month - 1);
-                      setStartDate(date);
-                    }}
-                  />
-                ))}
-              </View> */}
-              {/* <Text>Début</Text>
-              <Button title={startDate.toDateString()} onPress={() => setShowStartPicker(true)} />
-              {showStartPicker && (
-                <DateTimePicker
-                  value={startDate}
-                  mode="date"
-                  display="default"
-                  onChange={(_, date) => {
-                    setShowStartPicker(false);
-                    if (date) setStartDate(date);
-                  }}
-                />
-              )}
-              <Text>Fin</Text>
-              <Button title={endDate.toDateString()} onPress={() => setShowEndPicker(true)} />
-              {showEndPicker && (
-                <DateTimePicker
-                  value={endDate}
-                  mode="date"
-                  display="default"
-                  onChange={(_, date) => {
-                    setShowEndPicker(false);
-                    if (date) setEndDate(date);
-                  }}
-                />
-              )} */}
-            </>
-          )}
-
-          <Button title="Ajouter" onPress={handleSubmit} />
-          <Button title="Annuler" onPress={onClose} variant="error" />
+          <Button title={t('budgets.addOrEdit.add')} onPress={handleSubmit} />
+          <Button title={t('budgets.addOrEdit.cancel')} onPress={onClose} variant="error" />
         </View>
       </View>
     </Modal>

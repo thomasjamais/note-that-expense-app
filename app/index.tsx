@@ -9,12 +9,10 @@ export default function Index() {
 
   useEffect(() => {
     if (!isLoading) {
-      // si connecté → main, sinon → login
       router.replace(token ? '/main' : '/auth');
     }
   }, [token, isLoading, router]);
 
-  // pendant le chargement, on affiche un loader
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" />

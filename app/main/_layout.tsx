@@ -7,6 +7,7 @@ import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -17,6 +18,7 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
+  const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const { token, isLoading } = useAuth();
 
@@ -42,21 +44,21 @@ export default function TabLayout() {
       <Tabs.Screen
         name="Charts/index"
         options={{
-          title: 'Graphiques',
+          title: t('tabs.chart'),
           tabBarIcon: ({ color }) => <TabBarIcon name="bar-chart" color={color} />,
         }}
       />
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Dépenses',
+          title: t('tabs.expenses'),
           tabBarIcon: ({ color }) => <TabBarIcon name="money" color={color} />,
         }}
       />
       <Tabs.Screen
         name="Settings/index"
         options={{
-          title: 'Settings',
+          title: t('tabs.settings'),
           tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
         }}
       />

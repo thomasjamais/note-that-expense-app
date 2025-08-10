@@ -5,15 +5,12 @@ import Colors from '@/constants/Colors';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { TabBar, TabView } from 'react-native-tab-view';
 
-const routes = [
-  { key: 'categories', title: 'Catégories' },
-  { key: 'trips', title: 'Trips' },
-];
-
 export default function SettingsScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { logout } = useAuth();
 
@@ -35,9 +32,14 @@ export default function SettingsScreen() {
     }
   };
 
+  const routes = [
+    { key: 'categories', title: t('tabs.categories') },
+    { key: 'trips', title: t('tabs.trips') },
+  ];
+
   return (
     <SafeAreaView style={styles.safe}>
-      <Text style={styles.title}>Paramètres</Text>
+      <Text style={styles.title}>{t('tabs.settings')}</Text>
 
       <TabView
         navigationState={{ index, routes }}
@@ -57,7 +59,7 @@ export default function SettingsScreen() {
       />
 
       <View style={styles.buttonContainer}>
-        <Button title="Se déconnecter" onPress={handleLogout} />
+        <Button title={t('actions.logout')} onPress={handleLogout} />
       </View>
     </SafeAreaView>
   );

@@ -3,6 +3,7 @@ import { useCurrencies } from '@/hooks/useGetCurrencies';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Switch, Text, TextInput, View } from 'react-native';
 
 interface AddTripProps {
@@ -17,6 +18,7 @@ interface AddTripProps {
 }
 
 export default function AddTrip({ onAdd }: AddTripProps) {
+  const { t } = useTranslation();
   const { data: currencies } = useCurrencies();
 
   const [label, setLabel] = useState('');
@@ -30,11 +32,10 @@ export default function AddTrip({ onAdd }: AddTripProps) {
 
   const handleAdd = () => {
     if (!label || !localCurrencyId || !homeCurrencyId) {
-      alert('Veuillez remplir tous les champs requis.');
+      alert(t('trips.fieldsRequired'));
       return;
     }
     onAdd({ label, localCurrencyId, homeCurrencyId, startDate, endDate, isActive });
-    // reset form
     setLabel('');
     setLocalCurrencyId(undefined);
     setHomeCurrencyId(undefined);
@@ -45,49 +46,49 @@ export default function AddTrip({ onAdd }: AddTripProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Ajouter un trip</Text>
+      <Text style={styles.title}>{t('trips.addTrip')}</Text>
 
-      <Text style={styles.label}>Nom du trip</Text>
+      <Text style={styles.label}>{t('trips.tripName')}</Text>
       <TextInput
         style={styles.input}
-        placeholder="Nom du trip"
+        placeholder={t('trips.tripName')}
         value={label}
         onChangeText={setLabel}
       />
 
-      <Text style={styles.label}>Monnaie locale</Text>
+      <Text style={styles.label}>{t('trips.localCurrency')}</Text>
       {currencies?.length ? (
         <Picker
           selectedValue={localCurrencyId}
           onValueChange={(value) => setLocalCurrencyId(value)}
           style={styles.picker}
         >
-          <Picker.Item label="Veuillez séléctionner" value={undefined} />
+          <Picker.Item label={t('trips.localCurrencyPlaceholder')} value={undefined} />
           {currencies.map((c) => (
             <Picker.Item key={c.id} label={`${c.name} (${c.symbol})`} value={c.id} />
           ))}
         </Picker>
       ) : (
-        <Text>Chargement des devises...</Text>
+        <Text>{t('trips.currencies.loading')}</Text>
       )}
 
-      <Text style={styles.label}>Monnaie chez vous</Text>
+      <Text style={styles.label}>{t('trips.homeCurrency')}</Text>
       {currencies?.length ? (
         <Picker
           selectedValue={homeCurrencyId}
           onValueChange={(value) => setHomeCurrencyId(value)}
           style={styles.picker}
         >
-          <Picker.Item label="Veuillez séléctionner" value={undefined} />
+          <Picker.Item label={t('trips.homeCurrencyPlaceholder')} value={undefined} />
           {currencies.map((c) => (
             <Picker.Item key={c.id} label={`${c.name} (${c.symbol})`} value={c.id} />
           ))}
         </Picker>
       ) : (
-        <Text>Chargement des devises...</Text>
+        <Text>{t('trips.currencies.loading')}</Text>
       )}
 
-      <Text style={styles.label}>Date de début</Text>
+      <Text style={styles.label}>{t('trips.startDate')}</Text>
       <Button title={startDate.toDateString()} onPress={() => setShowStartPicker(true)} />
       {showStartPicker && (
         <DateTimePicker
@@ -101,9 +102,9 @@ export default function AddTrip({ onAdd }: AddTripProps) {
         />
       )}
 
-      <Text style={styles.label}>Date de fin (optionnelle)</Text>
+      <Text style={styles.label}>{t('trips.endDate')}</Text>
       <Button
-        title={endDate ? endDate.toDateString() : 'Sélectionner une date'}
+        title={endDate ? endDate.toDateString() : t('trips.endDatePlaceholder')}
         onPress={() => setShowEndPicker(true)}
       />
       {showEndPicker && (
@@ -119,11 +120,11 @@ export default function AddTrip({ onAdd }: AddTripProps) {
       )}
 
       <View style={styles.switchContainer}>
-        <Text style={styles.label}>Trip actif</Text>
+        <Text style={styles.label}>{t('trips.actif')}</Text>
         <Switch value={isActive} onValueChange={setIsActive} />
       </View>
 
-      <Button title="Ajouter" onPress={handleAdd} />
+      <Button title={t('trips.addButton')} onPress={handleAdd} />
     </View>
   );
 }

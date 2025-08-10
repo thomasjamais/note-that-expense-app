@@ -4,21 +4,19 @@ import LottieView from 'lottie-react-native';
 import React, { useCallback, useState } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 
-SplashScreen.preventAutoHideAsync(); // garde le splash natif visible
+SplashScreen.preventAutoHideAsync();
 
 export default function SplashScreenAnimated() {
   const [isAnimationDone, setIsAnimationDone] = useState(false);
   const router = useRouter();
   const { width, height } = useWindowDimensions();
 
-  // Dès que l’anim est terminée, on cache le splash natif et on navigue
   const onAnimationFinish = useCallback(async () => {
     setIsAnimationDone(true);
     await SplashScreen.hideAsync();
     router.replace('/');
   }, [router]);
 
-  // En cas de layout ready, si anim finie, on cache
   const onLayout = useCallback(async () => {
     if (isAnimationDone) {
       await SplashScreen.hideAsync();

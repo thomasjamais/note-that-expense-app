@@ -1,6 +1,7 @@
 import { useGetCurrentBudgetUsageByTripId } from '@/hooks/budgets/useGetCurrentBudgetUsageByTripId';
 import { useGetTripStats } from '@/hooks/stats/useGetTripStats';
 import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
+import { useTranslation } from 'react-i18next';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import BudgetMain from '../Budgets/BudgetMain';
 import StatCard from '../DailyStats/StatCard';
@@ -11,6 +12,8 @@ const screenWidth = Dimensions.get('window').width;
 type TripStatsProps = {};
 
 export default function TripStats({}: TripStatsProps) {
+  const { t } = useTranslation();
+
   const { data: activeTrip } = useGetActiveTrip();
   const {
     data: tripStats,
@@ -26,7 +29,7 @@ export default function TripStats({}: TripStatsProps) {
   if (isError) {
     return (
       <View>
-        <Text>Vous n'avez pas encore de dépenses pour votre trip</Text>
+        <Text>{t('tripStats.noData')}</Text>
       </View>
     );
   }
@@ -43,13 +46,13 @@ export default function TripStats({}: TripStatsProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Statistique du voyage {activeTrip?.label}</Text>
+      <Text style={styles.header}>{t('tripStats.title', { trip: activeTrip?.label })}</Text>
 
       <View style={styles.row}>
-        <StatCard icon="list" label="Jours" value={`${tripStats?.dayCount}`} />
+        <StatCard icon="list" label={t('tripStats.days')} value={`${tripStats?.dayCount}`} />
         <StatCard
           icon="money"
-          label="Total"
+          label={t('tripStats.total')}
           value={`${tripStats?.totalSpentConverted} ${activeTrip?.homeCurrencySymbol}`}
         />
       </View>
@@ -57,12 +60,12 @@ export default function TripStats({}: TripStatsProps) {
       <View style={styles.row}>
         <StatCard
           icon="bar-chart"
-          label="Moyenne journalière"
+          label={t('tripStats.averageDaily')}
           value={`${Number(tripStats?.avgDailySpentConverted).toFixed(2)} ${activeTrip?.homeCurrencySymbol}`}
         />
         <StatCard
           icon="star"
-          label="Plus grosse dépense"
+          label={t('tripStats.biggestExpense')}
           value={`${tripStats?.maxDailySpentConverted} ${activeTrip?.homeCurrencySymbol}`}
         />
       </View>

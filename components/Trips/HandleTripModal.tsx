@@ -7,6 +7,7 @@ import { useCurrencies } from '@/hooks/useGetCurrencies';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal, ScrollView, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
 import AddBudgetModal from '../Budgets/AddBudgetModal';
 import BudgetList from '../Budgets/BudgetList';
@@ -23,6 +24,7 @@ export default function HandleTripModal({
   modalVisible,
   setModalInvisible,
 }: HandleTripModalProps) {
+  const { t } = useTranslation();
   const { mutate: deleteTripForTripMutation } = useDeleteTrip();
   const { mutate: updateTripForTripMutation } = useUpdateTrip();
   const { data: budgets = [] } = useGetBudgets(selectedTrip.id);
@@ -81,47 +83,47 @@ export default function HandleTripModal({
     <Modal visible={modalVisible} animationType="slide" transparent>
       <View style={styles.modalContainer}>
         <ScrollView contentContainerStyle={styles.scrollContent} style={styles.modalContent}>
-          <Text style={styles.label}>Nom du trip</Text>
+          <Text style={styles.label}>{t('trips.tripName')}</Text>
           <TextInput
             style={styles.input}
-            placeholder="Nom du trip"
+            placeholder={t('trips.tripName')}
             value={label}
             onChangeText={setLabel}
           />
 
-          <Text style={styles.label}>Monnaie locale</Text>
+          <Text style={styles.label}>{t('trips.localCurrency')}</Text>
           {currencies?.length ? (
             <Picker
               selectedValue={localCurrencyId}
               onValueChange={(value) => setLocalCurrencyId(value)}
               style={styles.picker}
             >
-              <Picker.Item label="Veuillez séléctionner" value={undefined} />
+              <Picker.Item label={t('trips.localCurrencyPlaceholder')} value={undefined} />
               {currencies.map((c) => (
                 <Picker.Item key={c.id} label={`${c.name} (${c.symbol})`} value={c.id} />
               ))}
             </Picker>
           ) : (
-            <Text>Chargement des devises...</Text>
+            <Text>{t('trips.currencies.loading')}</Text>
           )}
 
-          <Text style={styles.label}>Monnaie chez vous</Text>
+          <Text style={styles.label}>{t('trips.homeCurrency')}</Text>
           {currencies?.length ? (
             <Picker
               selectedValue={homeCurrencyId}
               onValueChange={(value) => setHomeCurrencyId(value)}
               style={styles.picker}
             >
-              <Picker.Item label="Veuillez séléctionner" value={undefined} />
+              <Picker.Item label={t('trips.homeCurrencyPlaceholder')} value={undefined} />
               {currencies.map((c) => (
                 <Picker.Item key={c.id} label={`${c.name} (${c.symbol})`} value={c.id} />
               ))}
             </Picker>
           ) : (
-            <Text>Chargement des devises...</Text>
+            <Text>{t('trips.currencies.loading')}</Text>
           )}
 
-          <Text style={styles.label}>Date de début</Text>
+          <Text style={styles.label}>{t('trips.startDate')}</Text>
           <Button
             title={new Date(startDate).toDateString()}
             onPress={() => setShowStartPicker(true)}
@@ -138,9 +140,9 @@ export default function HandleTripModal({
             />
           )}
 
-          <Text style={styles.label}>Date de fin (optionnelle)</Text>
+          <Text style={styles.label}>{t('trips.endDate')}</Text>
           <Button
-            title={endDate ? endDate.toDateString() : 'Sélectionner une date'}
+            title={endDate ? endDate.toDateString() : t('trips.endDatePlaceholder')}
             onPress={() => setShowEndPicker(true)}
           />
           {showEndPicker && (
@@ -156,12 +158,12 @@ export default function HandleTripModal({
           )}
 
           <View style={styles.switchContainer}>
-            <Text style={styles.label}>Trip actif</Text>
+            <Text style={styles.label}>{t('trips.actif')}</Text>
             <Switch value={isActive} onValueChange={setIsActive} />
           </View>
           <View style={{ marginTop: 24 }}>
             <BudgetList budgets={budgets} />
-            <Button title="Ajouter un budget" onPress={() => setShowAddBudgetModal(true)} />
+            <Button title={t('budgets.addBudget')} onPress={() => setShowAddBudgetModal(true)} />
           </View>
 
           <AddBudgetModal
@@ -169,9 +171,9 @@ export default function HandleTripModal({
             onClose={() => setShowAddBudgetModal(false)}
             onAdd={(data) => addBudget({ ...data, tripId: selectedTrip.id })}
           />
-          <Button variant="success" title="Sauvegarder" onPress={handleSave} />
-          <Button variant="error" title="Supprimer" onPress={handleDelete} />
-          <Button title="Fermer" onPress={() => setModalInvisible()} />
+          <Button variant="success" title={t('trips.save')} onPress={handleSave} />
+          <Button variant="error" title={t('trips.delete')} onPress={handleDelete} />
+          <Button title={t('trips.close')} onPress={() => setModalInvisible()} />
         </ScrollView>
       </View>
     </Modal>

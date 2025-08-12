@@ -1,51 +1,38 @@
+import { theme } from '@/theme';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Tooltip } from 'react-native-paper';
 
-const PASTEL_RED = '#FFCDD2';
-const PASTEL_GREEN = '#C8E6C9';
+const Arrow = ({ direction }: { direction: 'up' | 'down' }) => (
+  <View
+    style={[
+      styles.arrow,
+      {
+        backgroundColor: direction === 'up' ? theme.colors.danger[100] : theme.colors.success[100],
+      },
+    ]}
+  />
+);
 
 export default function StatCard({
   icon,
   label,
   value,
   arrow,
-  tooltipTitle,
-  color = '#555',
+  color = theme.colors.text.secondary,
 }: {
   icon: React.ComponentProps<typeof FontAwesome>['name'];
   label: string;
   value: string;
   arrow?: 'up' | 'down';
-  tooltipTitle?: string;
   color?: string;
 }) {
-  const arrowIcon = arrow === 'up' ? 'arrow-up' : arrow === 'down' ? 'arrow-down' : null;
-  const arrowColor = arrow === 'up' ? PASTEL_RED : PASTEL_GREEN;
-  const rotation = arrow === 'up' ? '-315deg' : '-225deg';
-
   return (
     <View style={styles.card}>
-      <FontAwesome name={icon} size={24} color={color} />
-
-      {arrowIcon && tooltipTitle ? (
-        <Tooltip title={tooltipTitle} enterTouchDelay={1}>
-          <View style={{ flexDirection: 'row', marginTop: 8 }}>
-            <Text style={styles.cardLabel}>{label}</Text>
-            <FontAwesome
-              name={arrowIcon}
-              size={16}
-              color={arrowColor}
-              style={[styles.arrow, { transform: [{ rotate: rotation }] }]}
-            />
-          </View>
-        </Tooltip>
-      ) : (
-        <Text style={styles.cardLabel}>{label}</Text>
-      )}
-
-      <Text style={styles.cardValue}>{value}</Text>
+      <FontAwesome name={icon} size={22} color={color} />
+      <Text style={styles.label}>{label}</Text>
+      {!!arrow && <Arrow direction={arrow} />}
+      <Text style={styles.value}>{value}</Text>
     </View>
   );
 }
@@ -53,23 +40,23 @@ export default function StatCard({
 const styles = StyleSheet.create({
   card: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 8,
-    padding: 12,
-    marginHorizontal: 4,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.radii.lg,
+    padding: theme.spacing.md,
+    marginHorizontal: theme.spacing.xs,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
   },
-  cardLabel: {
-    marginTop: 6,
-    fontSize: 12,
-    color: '#666',
-  },
+  label: { marginTop: 6, fontSize: 12, color: theme.colors.text.secondary },
+  value: { marginTop: 4, fontSize: 16, fontWeight: '700', color: theme.colors.text.primary },
   arrow: {
-    marginTop: 4,
-    marginBottom: 4,
-  },
-  cardValue: {
-    fontSize: 16,
-    fontWeight: '600',
+    width: 10,
+    height: 10,
+    borderRadius: 999,
+    marginTop: 6,
   },
 });

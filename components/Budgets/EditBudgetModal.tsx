@@ -1,8 +1,9 @@
-import Button from '@/components/Button';
 import { Budgets } from '@/hooks/budgets/useGetBudgetsByTripId';
+import { theme } from '@/theme';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
+import Button from '../ui/Button';
 
 type EditBudgetModalProps = {
   visible: boolean;
@@ -67,8 +68,12 @@ export default function EditBudgetModal({
             />
           </View>
 
-          <Button title={t('budgets.editButton')} onPress={handleSubmit} />
-          <Button title={t('budgets.cancel')} onPress={onClose} variant="error" />
+          <Button
+            label={t('budgets.editButton')}
+            onPress={handleSubmit}
+            style={{ marginBottom: theme.spacing.lg }}
+          />
+          <Button label={t('budgets.cancel')} onPress={onClose} variant="link" />
         </View>
       </View>
     </Modal>

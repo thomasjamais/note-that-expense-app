@@ -1,94 +1,83 @@
+import HandleExpenseModal from '@/components/Expenses/HandleExpenseModal';
+import { Card } from '@/components/ui/Card';
 import { TripWithCurrencies } from '@/hooks/useGetActiveTrip';
 import { Category } from '@/hooks/useGetCategories';
 import { useGetExpensesByTripId } from '@/hooks/useGetExpensesByTripId';
-import { useState } from 'react';
+import { theme } from '@/theme';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import HandleExpenseModal from './HandleExpenseModal';
+import { Text, TouchableOpacity, View } from 'react-native';
 
-type ExpenseListProps = {
+export default function ExpenseList({
+  activeTrip,
+  categories,
+}: {
   activeTrip: TripWithCurrencies;
   categories: Category[];
-};
-
-export default function ExpenseList({ activeTrip, categories }: ExpenseListProps) {
+}) {
   const { t } = useTranslation();
-
-  const { data: expensesForTrip } = useGetExpensesByTripId(activeTrip?.id || '');
+  const { data: expenses = [] } = useGetExpensesByTripId(activeTrip?.id || '');
   const [selectedExpense, setSelectedExpense] = useState<any | null>(null);
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const handleExpensePress = (expense: any) => {
-    setSelectedExpense(expense);
-    setModalVisible(true);
-  };
+  const [visible, setVisible] = useState(false);
 
   return (
     <View>
-      <Text style={[styles.title, { marginTop: 24 }]}>{t('expenses.addedExpenses')}</Text>
+      <Text
+        style={{
+          ...theme.typography.title,
+          marginBottom: theme.spacing.sm,
+        }}
+      >
+        {t('expenses.addedExpenses')}
+      </Text>
+      {!expenses.length && (
+        <Text style={{ color: theme.colors.text.secondary }}>{t('expenses.noExpenses')}</Text>
+      )}
 
-      {expensesForTrip?.length === 0 && <Text>{t('expenses.noExpenses')}</Text>}
-
-      {expensesForTrip?.map((item) => (
+      {expenses.map((item) => (
         <TouchableOpacity
           key={item.id}
-          style={{
-            padding: 12,
-            backgroundColor: item.categoryColor,
-            marginVertical: 6,
-            borderRadius: 6,
+          onPress={() => {
+            setSelectedExpense(item);
+            setVisible(true);
           }}
-          onPress={() => handleExpensePress(item)}
         >
-          <Text>
-            {new Date(item.date).toLocaleDateString()} - {item.label} ({item.categoryLabel})
-          </Text>
-          <Text>
-            {item.originalAmount} {activeTrip?.localCurrencySymbol} / {item.convertedAmount}{' '}
-            {activeTrip?.homeCurrencySymbol}
-          </Text>
+          <Card style={{ marginBottom: theme.spacing.sm, paddingVertical: theme.spacing.md }}>
+            <View
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                bottom: 0,
+                width: 6,
+                borderTopLeftRadius: theme.radii.md,
+                borderBottomLeftRadius: theme.radii.md,
+                backgroundColor: item.categoryColor,
+              }}
+            />
+            <View style={{ paddingLeft: theme.spacing.sm }}>
+              <Text style={{ fontWeight: '700', color: theme.colors.text.primary }}>
+                {new Date(item.date).toLocaleDateString()} • {item.label}
+              </Text>
+              <Text style={{ color: theme.colors.text.secondary }}>{item.categoryLabel}</Text>
+              <Text style={{ marginTop: 4 }}>
+                {item.originalAmount} {activeTrip?.localCurrencySymbol} / {item.convertedAmount}{' '}
+                {activeTrip?.homeCurrencySymbol}
+              </Text>
+            </View>
+          </Card>
         </TouchableOpacity>
       ))}
-      {selectedExpense && selectedExpense.categoryId && (
+
+      {selectedExpense && (
         <HandleExpenseModal
           activeTrip={activeTrip}
           categories={categories}
           selectedExpense={selectedExpense}
-          modalVisible={modalVisible}
-          setModalInvisible={() => setModalVisible(false)}
+          modalVisible={visible}
+          setModalInvisible={() => setVisible(false)}
         />
       )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 24,
-  },
-  label: {
-    marginTop: 12,
-    fontWeight: '600',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 8,
-    width: '80%',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
-    padding: 8,
-    marginVertical: 8,
-  },
-});

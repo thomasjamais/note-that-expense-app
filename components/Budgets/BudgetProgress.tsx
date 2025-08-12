@@ -1,39 +1,39 @@
+import { theme } from '@/theme';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
-
-type BudgetProgressCircleProps = {
-  name: string;
-  amount: number;
-  spent: number;
-  currencySymbol?: string;
-};
 
 export default function BudgetProgressCircle({
   name,
   amount,
   spent,
   currencySymbol = '€',
-}: BudgetProgressCircleProps) {
-  const percent = Math.min((spent / amount) * 100, 999);
+}: {
+  name: string;
+  amount: number;
+  spent: number;
+  currencySymbol?: string;
+}) {
+  const percent = Math.min((spent / (amount || 1)) * 100, 999);
   const isOver = percent > 100;
 
   return (
     <View style={styles.container}>
       <Text style={styles.name}>{name}</Text>
-
       <AnimatedCircularProgress
-        size={120}
+        size={140}
         width={12}
         fill={Math.min(percent, 100)}
-        tintColor={isOver ? '#ff4d4d' : '#4CAF50'}
-        backgroundColor="#e0e0e0"
+        tintColor={isOver ? theme.colors.danger[600] : theme.colors.success[700]}
+        backgroundColor={theme.colors.neutral[200]}
         rotation={0}
         lineCap="round"
       >
         {() => (
           <View style={styles.innerLabel}>
-            <Text style={[styles.percent, isOver && styles.over]}>{Math.round(percent)}%</Text>
+            <Text style={[styles.percent, isOver && { color: theme.colors.danger[600] }]}>
+              {Math.round(percent)}%
+            </Text>
             <Text style={styles.amount}>
               {spent.toFixed(0)} / {amount.toFixed(0)} {currencySymbol}
             </Text>
@@ -47,10 +47,10 @@ export default function BudgetProgressCircle({
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginVertical: 16,
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 16,
+    marginVertical: theme.spacing.md,
+    backgroundColor: theme.colors.surface,
+    padding: theme.spacing.lg,
+    borderRadius: theme.radii.xl,
     shadowColor: '#000',
     shadowOpacity: 0.05,
     shadowRadius: 6,
@@ -60,23 +60,10 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: '600',
-    marginBottom: 12,
-    color: '#333',
+    marginBottom: theme.spacing.sm,
+    color: theme.colors.text.primary,
   },
-  innerLabel: {
-    alignItems: 'center',
-  },
-  percent: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#4CAF50',
-  },
-  over: {
-    color: '#ff4d4d',
-  },
-  amount: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 4,
-  },
+  innerLabel: { alignItems: 'center' },
+  percent: { fontSize: 22, fontWeight: '800', color: theme.colors.success[700] },
+  amount: { fontSize: 12, color: theme.colors.text.secondary, marginTop: 4 },
 });

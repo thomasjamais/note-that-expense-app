@@ -164,5 +164,23 @@
     },
     "actions": {
         "logout": "Se déconnecter"
+    },
+    "common": {
+        "loading": "Chargement...",
+        "error": "Une erreur est survenue",
+        "noData": "Aucune donnée disponible",
+        "close": "Fermer",
+        "cancel": "Annuler",
+        "save": "Sauvegarder",
+        "delete": "Supprimer",
+        "edit": "Modifier",
+        "add": "Ajouter",
+        "confirm": "Confirmer"
+    },
+    "timeRange": {
+        "total": "Total",
+        "week": "Semaine",
+        "month": "Mois",
+        "custom": "Personnalisé"
     }
 }

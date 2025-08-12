@@ -1,227 +1,196 @@
+import BudgetList from '@/components/Budgets/BudgetList';
 import { Trip } from '@/components/TripsScreen/hook';
+import Button from '@/components/ui/Button';
+import { Field } from '@/components/ui/Field';
+import { Input } from '@/components/ui/Input';
+import { ModalSheet } from '@/components/ui/ModalSheet';
 import { useAddBudget } from '@/hooks/budgets/useAddBudget';
 import { useGetBudgets } from '@/hooks/budgets/useGetBudgetsByTripId';
 import { useDeleteTrip } from '@/hooks/trips/useDeleteTrip';
 import { useUpdateTrip } from '@/hooks/trips/useUpdateTrip';
 import { useCurrencies } from '@/hooks/useGetCurrencies';
+import { theme } from '@/theme';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, ScrollView, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
+import { Text, View } from 'react-native';
 import AddBudgetModal from '../Budgets/AddBudgetModal';
-import BudgetList from '../Budgets/BudgetList';
-import Button from '../Button';
-
-type HandleTripModalProps = {
-  selectedTrip: Trip;
-  modalVisible: boolean;
-  setModalInvisible: () => void;
-};
 
 export default function HandleTripModal({
   selectedTrip,
   modalVisible,
   setModalInvisible,
-}: HandleTripModalProps) {
+}: {
+  selectedTrip: Trip;
+  modalVisible: boolean;
+  setModalInvisible: () => void;
+}) {
   const { t } = useTranslation();
-  const { mutate: deleteTripForTripMutation } = useDeleteTrip();
-  const { mutate: updateTripForTripMutation } = useUpdateTrip();
-  const { data: budgets = [] } = useGetBudgets(selectedTrip.id);
-  const { mutate: addBudget } = useAddBudget();
-  const [showAddBudgetModal, setShowAddBudgetModal] = useState(false);
   const { data: currencies } = useCurrencies();
+  const { mutate: updateTrip } = useUpdateTrip();
+  const { mutate: deleteTrip } = useDeleteTrip();
+  const { mutate: addBudget } = useAddBudget();
+  const { data: budgets = [] } = useGetBudgets(selectedTrip.id);
 
-  const [label, setLabel] = useState(selectedTrip?.label || '');
+  const [label, setLabel] = useState(selectedTrip.label);
+  const [showAddBudgetModal, setShowAddBudgetModal] = useState(false);
   const [localCurrencyId, setLocalCurrencyId] = useState<string | undefined>(
-    selectedTrip?.localCurrencyId,
+    selectedTrip.localCurrencyId,
   );
   const [homeCurrencyId, setHomeCurrencyId] = useState<string | undefined>(
-    selectedTrip?.homeCurrencyId,
+    selectedTrip.homeCurrencyId,
   );
-  const [startDate, setStartDate] = useState<Date>(new Date(selectedTrip?.startDate));
+  const [startDate, setStartDate] = useState<Date>(new Date(selectedTrip.startDate));
   const [endDate, setEndDate] = useState<Date | undefined>(
-    selectedTrip?.endDate ? new Date(selectedTrip.endDate) : undefined,
+    selectedTrip.endDate ? new Date(selectedTrip.endDate) : undefined,
   );
-  const [showStartPicker, setShowStartPicker] = useState(false);
-  const [showEndPicker, setShowEndPicker] = useState(false);
-  const [isActive, setIsActive] = useState(selectedTrip?.isActive || false);
+  const [showStart, setShowStart] = useState(false);
+  const [showEnd, setShowEnd] = useState(false);
 
   useEffect(() => {
-    if (selectedTrip) {
-      setLabel(selectedTrip.label);
-      setLocalCurrencyId(selectedTrip.localCurrencyId);
-      setHomeCurrencyId(selectedTrip.homeCurrencyId);
-      setStartDate(new Date(selectedTrip.startDate));
-      setEndDate(selectedTrip.endDate ? new Date(selectedTrip.endDate) : undefined);
-      setIsActive(selectedTrip.isActive);
-    }
+    if (!selectedTrip) return;
+    setLabel(selectedTrip.label);
+    setLocalCurrencyId(selectedTrip.localCurrencyId);
+    setHomeCurrencyId(selectedTrip.homeCurrencyId);
+    setStartDate(new Date(selectedTrip.startDate));
+    setEndDate(selectedTrip.endDate ? new Date(selectedTrip.endDate) : undefined);
   }, [selectedTrip]);
 
   const handleSave = () => {
-    updateTripForTripMutation({
+    updateTrip({
       tripId: selectedTrip.id,
       label,
       localCurrencyId: localCurrencyId || '',
       homeCurrencyId: homeCurrencyId || '',
       startDate,
       endDate,
-      isActive,
+      isActive: selectedTrip.isActive,
     });
-
     setModalInvisible();
   };
 
   const handleDelete = () => {
-    deleteTripForTripMutation({
-      tripId: selectedTrip.id,
-    });
+    deleteTrip({ tripId: selectedTrip.id });
     setModalInvisible();
   };
 
   return (
-    <Modal visible={modalVisible} animationType="slide" transparent>
-      <View style={styles.modalContainer}>
-        <ScrollView contentContainerStyle={styles.scrollContent} style={styles.modalContent}>
-          <Text style={styles.label}>{t('trips.tripName')}</Text>
-          <TextInput
-            style={styles.input}
-            placeholder={t('trips.tripName')}
-            value={label}
-            onChangeText={setLabel}
+    <ModalSheet visible={modalVisible} onClose={setModalInvisible}>
+      <Text style={{ ...theme.typography.title, marginBottom: theme.spacing.sm }}>
+        {t('trips.editTrip')}
+      </Text>
+
+      <Field label={t('trips.tripName')}>
+        <Input value={label} onChangeText={setLabel} />
+      </Field>
+
+      <Field label={t('trips.localCurrency')}>
+        <View
+          style={{
+            borderWidth: 1,
+            borderColor: theme.colors.neutral[200],
+            borderRadius: theme.radii.md,
+            overflow: 'hidden',
+          }}
+        >
+          <Picker selectedValue={localCurrencyId} onValueChange={(v) => setLocalCurrencyId(v)}>
+            <Picker.Item label={t('trips.localCurrencyPlaceholder')!} value={undefined} />
+            {currencies?.map((c) => (
+              <Picker.Item key={c.id} label={`${c.name} (${c.symbol})`} value={c.id} />
+            ))}
+          </Picker>
+        </View>
+      </Field>
+
+      <Field label={t('trips.homeCurrency')}>
+        <View
+          style={{
+            borderWidth: 1,
+            borderColor: theme.colors.neutral[200],
+            borderRadius: theme.radii.md,
+            overflow: 'hidden',
+          }}
+        >
+          <Picker selectedValue={homeCurrencyId} onValueChange={(v) => setHomeCurrencyId(v)}>
+            <Picker.Item label={t('trips.homeCurrencyPlaceholder')!} value={undefined} />
+            {currencies?.map((c) => (
+              <Picker.Item key={c.id} label={`${c.name} (${c.symbol})`} value={c.id} />
+            ))}
+          </Picker>
+        </View>
+      </Field>
+
+      <Field label={t('trips.startDate')}>
+        <Button
+          variant="soft"
+          label={startDate.toDateString()}
+          onPress={() => setShowStart(true)}
+        />
+        {showStart && (
+          <DateTimePicker
+            value={startDate}
+            mode="date"
+            onChange={(_, d) => {
+              setShowStart(false);
+              if (d) setStartDate(d);
+            }}
           />
+        )}
+      </Field>
 
-          <Text style={styles.label}>{t('trips.localCurrency')}</Text>
-          {currencies?.length ? (
-            <Picker
-              selectedValue={localCurrencyId}
-              onValueChange={(value) => setLocalCurrencyId(value)}
-              style={styles.picker}
-            >
-              <Picker.Item label={t('trips.localCurrencyPlaceholder')} value={undefined} />
-              {currencies.map((c) => (
-                <Picker.Item key={c.id} label={`${c.name} (${c.symbol})`} value={c.id} />
-              ))}
-            </Picker>
-          ) : (
-            <Text>{t('trips.currencies.loading')}</Text>
-          )}
+      <Field label={t('trips.endDate')}>
+        <Button
+          variant="soft"
+          label={endDate ? endDate.toDateString() : t('trips.endDatePlaceholder')!}
+          onPress={() => setShowEnd(true)}
+        />
+        {showEnd && (
+          <DateTimePicker
+            value={endDate || new Date()}
+            mode="date"
+            onChange={(_, d) => {
+              setShowEnd(false);
+              setEndDate(d || undefined);
+            }}
+          />
+        )}
+      </Field>
 
-          <Text style={styles.label}>{t('trips.homeCurrency')}</Text>
-          {currencies?.length ? (
-            <Picker
-              selectedValue={homeCurrencyId}
-              onValueChange={(value) => setHomeCurrencyId(value)}
-              style={styles.picker}
-            >
-              <Picker.Item label={t('trips.homeCurrencyPlaceholder')} value={undefined} />
-              {currencies.map((c) => (
-                <Picker.Item key={c.id} label={`${c.name} (${c.symbol})`} value={c.id} />
-              ))}
-            </Picker>
-          ) : (
-            <Text>{t('trips.currencies.loading')}</Text>
-          )}
-
-          <Text style={styles.label}>{t('trips.startDate')}</Text>
+      <View style={{ marginTop: theme.spacing.xl }}>
+        <BudgetList budgets={budgets} />
+        <View style={{ marginTop: theme.spacing.sm }}>
           <Button
-            title={new Date(startDate).toDateString()}
-            onPress={() => setShowStartPicker(true)}
+            label={t('budgets.addBudget')}
+            onPress={() => {
+              setShowAddBudgetModal(true);
+            }}
+            leftIcon={<FontAwesome name="plus" size={16} color={theme.colors.text.inverted} />}
           />
-          {showStartPicker && (
-            <DateTimePicker
-              value={startDate}
-              mode="date"
-              display="default"
-              onChange={(_, date) => {
-                setShowStartPicker(false);
-                if (date) setStartDate(date);
-              }}
-            />
-          )}
-
-          <Text style={styles.label}>{t('trips.endDate')}</Text>
-          <Button
-            title={endDate ? endDate.toDateString() : t('trips.endDatePlaceholder')}
-            onPress={() => setShowEndPicker(true)}
-          />
-          {showEndPicker && (
-            <DateTimePicker
-              value={endDate || new Date()}
-              mode="date"
-              display="default"
-              onChange={(_, date) => {
-                setShowEndPicker(false);
-                if (date) setEndDate(date);
-              }}
-            />
-          )}
-
-          <View style={styles.switchContainer}>
-            <Text style={styles.label}>{t('trips.actif')}</Text>
-            <Switch value={isActive} onValueChange={setIsActive} />
-          </View>
-          <View style={{ marginTop: 24 }}>
-            <BudgetList budgets={budgets} />
-            <Button title={t('budgets.addBudget')} onPress={() => setShowAddBudgetModal(true)} />
-          </View>
-
-          <AddBudgetModal
-            visible={showAddBudgetModal}
-            onClose={() => setShowAddBudgetModal(false)}
-            onAdd={(data) => addBudget({ ...data, tripId: selectedTrip.id })}
-          />
-          <Button variant="success" title={t('trips.save')} onPress={handleSave} />
-          <Button variant="error" title={t('trips.delete')} onPress={handleDelete} />
-          <Button title={t('trips.close')} onPress={() => setModalInvisible()} />
-        </ScrollView>
+        </View>
       </View>
-    </Modal>
+
+      <AddBudgetModal
+        visible={showAddBudgetModal}
+        onClose={() => setShowAddBudgetModal(false)}
+        onAdd={(data) => addBudget({ ...data, tripId: selectedTrip.id })}
+      />
+
+      <View style={{ marginTop: theme.spacing.xl }}>
+        <Button
+          label={t('trips.save')}
+          onPress={handleSave}
+          style={{ marginBottom: theme.spacing.sm }}
+        />
+        <Button
+          variant="destructive"
+          label={t('trips.delete')}
+          onPress={handleDelete}
+          style={{ marginBottom: theme.spacing.sm }}
+        />
+        <Button variant="link" label={t('trips.close')} onPress={setModalInvisible} />
+      </View>
+    </ModalSheet>
   );
 }
-
-const styles = StyleSheet.create({
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 24,
-  },
-  label: {
-    marginTop: 12,
-    fontWeight: '600',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    width: '90%',
-    margin: 'auto',
-  },
-  scrollContent: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
-    padding: 8,
-    marginVertical: 8,
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 12,
-  },
-  picker: {
-    marginTop: 4,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 6,
-  },
-});

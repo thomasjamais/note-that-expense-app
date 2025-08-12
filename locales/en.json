@@ -164,5 +164,23 @@
     },
     "actions": {
         "logout": "Log out"
+    },
+    "common": {
+        "loading": "Loading...",
+        "error": "An error occurred",
+        "noData": "No data available",
+        "save": "Save",
+        "cancel": "Cancel",
+        "close": "Close",
+        "delete": "Delete",
+        "edit": "Edit",
+        "add": "Add",
+        "confirm": "Confirm"
+    },
+    "timeRange": {
+        "total": "Total",
+        "week": "Week",
+        "month": "Month",
+        "custom": "Custom"
     }
 }

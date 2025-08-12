@@ -1,41 +1,31 @@
 import { LineChartData } from '@/hooks/useGetLineChartForTripId';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Dimensions, ScrollView } from 'react-native';
 import { StackedBarChart } from 'react-native-chart-kit';
 
-const screenWidth = Dimensions.get('window').width;
+const screenWidth3 = Dimensions.get('window').width;
 
-type ChartProps = {
-  stackedBarData: LineChartData;
-  selectedCategories: string[];
-  setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
-};
-
-export default function Chart({
+export default function ChartLine({
   stackedBarData,
   selectedCategories,
   setSelectedCategories,
-}: ChartProps) {
+}: {
+  stackedBarData: LineChartData;
+  selectedCategories: string[];
+  setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
+}) {
   useEffect(() => {
-    if (stackedBarData && selectedCategories.length === 0) {
+    if (stackedBarData && selectedCategories.length === 0)
       setSelectedCategories(stackedBarData.legend);
-    }
-  }, [stackedBarData, selectedCategories, setSelectedCategories]);
-
-  const categoryIndexes = stackedBarData.legend
-    .map((cat, index) => (selectedCategories.includes(cat) ? index : -1))
-    .filter((index) => index !== -1);
-
-  const filteredData = stackedBarData.data.map((row: number[]) =>
-    categoryIndexes.map((i) => row[i]),
-  );
-
-  const filteredColors = categoryIndexes.map((i) => stackedBarData.barColors[i]);
-  const filteredLegend = categoryIndexes.map((i) => stackedBarData.legend[i]);
-
+  }, [stackedBarData, selectedCategories]);
+  const idx = stackedBarData.legend
+    .map((c: string, i: number) => (selectedCategories.includes(c) ? i : -1))
+    .filter((i: number) => i !== -1);
+  const data = stackedBarData.data.map((row: number[]) => idx.map((i: number) => row[i]));
+  const colors = idx.map((i: number) => stackedBarData.barColors[i]);
+  const legend = idx.map((i: number) => stackedBarData.legend[i]);
   const barWidth = 60;
-  const chartWidth = Math.max(screenWidth, stackedBarData.labels.length * barWidth);
-
+  const chartWidth = Math.max(screenWidth3, stackedBarData.labels.length * barWidth);
   return (
     <ScrollView
       horizontal
@@ -43,12 +33,7 @@ export default function Chart({
       contentContainerStyle={{ paddingHorizontal: 16 }}
     >
       <StackedBarChart
-        data={{
-          labels: stackedBarData.labels,
-          legend: filteredLegend,
-          data: filteredData,
-          barColors: filteredColors,
-        }}
+        data={{ labels: stackedBarData.labels, legend, data, barColors: colors }}
         width={chartWidth}
         height={320}
         withHorizontalLabels
@@ -56,13 +41,9 @@ export default function Chart({
         chartConfig={{
           backgroundGradientFrom: '#fff',
           backgroundGradientTo: '#fff',
-          color: (opacity = 1) => `rgba(0,0,0,${opacity})`,
+          color: (o = 1) => `rgba(0,0,0,${o})`,
           decimalPlaces: 0,
-          propsForBackgroundLines: {
-            strokeWidth: 1,
-            strokeDasharray: '',
-            stroke: '#e0e0e0',
-          },
+          propsForBackgroundLines: { strokeWidth: 1, strokeDasharray: '', stroke: '#e0e0e0' },
         }}
       />
     </ScrollView>

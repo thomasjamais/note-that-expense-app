@@ -1,20 +1,19 @@
 import { PieChartData } from '@/hooks/useGetPieChartForTripId';
+import { theme } from '@/theme';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-
-type CategoryListProps = {
-  pieChartData: PieChartData[];
-  selectedCategories: string[];
-  toggleCategory: (name: string) => void;
-};
 
 export default function CategoryList({
   pieChartData,
   selectedCategories,
   toggleCategory,
-}: CategoryListProps) {
+}: {
+  pieChartData: PieChartData[];
+  selectedCategories: string[];
+  toggleCategory: (n: string) => void;
+}) {
   return (
-    <View style={{ margin: 12 }}>
+    <View style={{ marginTop: theme.spacing.md }}>
       {pieChartData?.map((cat: any) => (
         <TouchableOpacity
           key={cat.name}
@@ -22,8 +21,8 @@ export default function CategoryList({
           style={{
             flexDirection: 'row',
             alignItems: 'center',
-            marginVertical: 4,
-            opacity: selectedCategories.includes(cat.name) ? 1 : 0.5,
+            marginVertical: 6,
+            opacity: selectedCategories.includes(cat.name) ? 1 : 0.45,
           }}
         >
           <View
@@ -36,7 +35,7 @@ export default function CategoryList({
             }}
           />
           <Text style={{ flex: 1, fontSize: 14 }}>{cat.name}</Text>
-          <Text style={{ fontSize: 14, fontWeight: '600' }}>{cat.population} €</Text>
+          <Text style={{ fontSize: 14, fontWeight: '700' }}>{cat.population} €</Text>
         </TouchableOpacity>
       ))}
     </View>

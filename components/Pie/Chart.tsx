@@ -3,35 +3,27 @@ import React from 'react';
 import { Dimensions, View } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 
-const screenWidth = Dimensions.get('window').width;
+const screenWidth2 = Dimensions.get('window').width;
 
-type ChartProps = {
-  filteredData: PieChartData[];
-};
-
-export default function Chart({ filteredData }: ChartProps) {
+export default function Chart({ filteredData }: { filteredData: PieChartData[] }) {
   return (
-    <View>
-      {filteredData && filteredData.length > 0 && (
-        <View style={{ width: '100%', alignItems: 'center' }}>
-          <PieChart
-            data={filteredData}
-            width={screenWidth * 0.85}
-            height={220}
-            chartConfig={{
-              backgroundColor: '#fff',
-              backgroundGradientFrom: '#fff',
-              backgroundGradientTo: '#fff',
-              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            }}
-            accessor="population"
-            backgroundColor="transparent"
-            paddingLeft="15"
-            hasLegend={false}
-            absolute
-          />
-        </View>
-      )}
+    <View style={{ width: '100%', alignItems: 'center' }}>
+      <PieChart
+        data={filteredData}
+        width={screenWidth2 * 0.88}
+        height={220}
+        chartConfig={{
+          backgroundColor: '#fff',
+          backgroundGradientFrom: '#fff',
+          backgroundGradientTo: '#fff',
+          color: (o = 1) => `rgba(0,0,0,${o})`,
+        }}
+        accessor="population"
+        backgroundColor="transparent"
+        paddingLeft="15"
+        hasLegend={false}
+        absolute
+      />
     </View>
   );
 }

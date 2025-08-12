@@ -1,37 +1,33 @@
+import BudgetProgressCircle from '@/components/Budgets/BudgetProgress';
+import StatCard from '@/components/DailyStats/StatCard';
+import Skeleton from '@/components/Skeleton';
 import { BudgetUsage } from '@/hooks/budgets/useGetCurrentBudgetUsageByTripId';
 import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
+import { theme } from '@/theme';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
-import BudgetProgressCircle from '../Budgets/BudgetProgress';
-import StatCard from '../DailyStats/StatCard';
-import Skeleton from '../Skeleton';
+import { Dimensions, Text, View } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
-
-type BudgetMainProps = {
-  budgetUsage?: BudgetUsage;
-  isBudgetUsageLoading: boolean;
-  isBudgetUsageError: boolean;
-};
-
-const getCurrentMonth = () => {
-  const date = new Date();
-  return date.toLocaleString('default', { month: 'long' });
-};
 
 export default function BudgetMain({
   budgetUsage,
   isBudgetUsageLoading,
   isBudgetUsageError,
-}: BudgetMainProps) {
+}: {
+  budgetUsage?: BudgetUsage;
+  isBudgetUsageLoading: boolean;
+  isBudgetUsageError: boolean;
+}) {
   const { t } = useTranslation();
-
   const { data: activeTrip } = useGetActiveTrip();
 
   return (
-    <View style={styles.container}>
+    <View style={{ marginTop: theme.spacing.xl }}>
       {isBudgetUsageError && (
-        <Text style={{ color: 'red', textAlign: 'center' }}>{t('budgets.errorOne')}</Text>
+        <Text style={{ color: theme.colors.danger[600], textAlign: 'center' }}>
+          {t('budgets.errorOne')}
+        </Text>
       )}
       {isBudgetUsageLoading && (
         <View style={{ alignItems: 'center', marginVertical: 20 }}>
@@ -40,40 +36,52 @@ export default function BudgetMain({
           <Skeleton width={80} height={20} style={{ marginTop: 6 }} />
         </View>
       )}
-      {budgetUsage && (
+      {!!budgetUsage && (
         <View>
-          {budgetUsage.scope === 'total' ? (
-            <Text style={styles.header}>{t('budgets.totalBudget')}</Text>
-          ) : (
-            <Text style={styles.header}>
-              {t('budgets.monthlyBudget', { month: getCurrentMonth() })}
-            </Text>
-          )}
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: '700',
+              marginBottom: theme.spacing.md,
+              textAlign: 'center',
+            }}
+          >
+            {budgetUsage.scope === 'total'
+              ? t('budgets.totalBudget')
+              : t('budgets.monthlyBudget', {
+                  month: new Date().toLocaleString('default', { month: 'long' }),
+                })}
+          </Text>
           <BudgetProgressCircle
-            name={budgetUsage?.name}
-            spent={Number(budgetUsage?.spentConverted)}
-            amount={Number(budgetUsage?.budgetAmount)}
+            name={budgetUsage.name}
+            spent={Number(budgetUsage.spentConverted)}
+            amount={Number(budgetUsage.budgetAmount)}
             currencySymbol={activeTrip?.homeCurrencySymbol}
           />
-
-          <View style={styles.row}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: theme.spacing.md,
+            }}
+          >
             <StatCard
               icon="money"
               label={t('budgets.plannedBudget')}
-              value={`${budgetUsage?.budgetAmount} ${activeTrip?.homeCurrencySymbol}`}
+              value={`${budgetUsage.budgetAmount} ${activeTrip?.homeCurrencySymbol}`}
             />
-            {Number(budgetUsage?.spentConverted) > Number(budgetUsage?.budgetAmount) ? (
+            {Number(budgetUsage.spentConverted) > Number(budgetUsage.budgetAmount) ? (
               <StatCard
                 icon="exclamation-circle"
                 label={t('budgets.overpassed')}
-                value={`${Number(budgetUsage?.spentConverted) - Number(budgetUsage?.budgetAmount) || 0} ${activeTrip?.homeCurrencySymbol}`}
-                color="#FF0000"
+                value={`${Number(budgetUsage.spentConverted) - Number(budgetUsage.budgetAmount) || 0} ${activeTrip?.homeCurrencySymbol}`}
+                color={theme.colors.danger[600]}
               />
             ) : (
               <StatCard
                 icon="check-circle"
                 label={t('budgets.expenses')}
-                value={`${budgetUsage?.spentConverted} ${activeTrip?.homeCurrencySymbol}`}
+                value={`${budgetUsage.spentConverted} ${activeTrip?.homeCurrencySymbol}`}
               />
             )}
           </View>
@@ -82,21 +90,3 @@ export default function BudgetMain({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 24,
-    backgroundColor: '#fff',
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-  },
-});

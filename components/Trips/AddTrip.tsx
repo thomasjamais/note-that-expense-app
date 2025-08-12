@@ -1,13 +1,18 @@
-import Button from '@/components/Button';
+import Button from '@/components/ui/Button';
+import { Field } from '@/components/ui/Field';
+import { Input } from '@/components/ui/Input';
 import { useCurrencies } from '@/hooks/useGetCurrencies';
+import { theme } from '@/theme';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Switch, Text, TextInput, View } from 'react-native';
+import { Switch, Text, View } from 'react-native';
 
-interface AddTripProps {
-  onAdd: (values: {
+export default function AddTrip({
+  onAdd,
+}: {
+  onAdd: (v: {
     label: string;
     localCurrencyId: string;
     homeCurrencyId: string;
@@ -15,26 +20,20 @@ interface AddTripProps {
     endDate?: Date;
     isActive: boolean;
   }) => void;
-}
-
-export default function AddTrip({ onAdd }: AddTripProps) {
+}) {
   const { t } = useTranslation();
   const { data: currencies } = useCurrencies();
-
   const [label, setLabel] = useState('');
   const [localCurrencyId, setLocalCurrencyId] = useState<string | undefined>();
   const [homeCurrencyId, setHomeCurrencyId] = useState<string | undefined>();
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
-  const [showStartPicker, setShowStartPicker] = useState(false);
-  const [showEndPicker, setShowEndPicker] = useState(false);
+  const [showStart, setShowStart] = useState(false);
+  const [showEnd, setShowEnd] = useState(false);
   const [isActive, setIsActive] = useState(false);
 
-  const handleAdd = () => {
-    if (!label || !localCurrencyId || !homeCurrencyId) {
-      alert(t('trips.fieldsRequired'));
-      return;
-    }
+  const submit = () => {
+    if (!label || !localCurrencyId || !homeCurrencyId) return alert(t('trips.fieldsRequired'));
     onAdd({ label, localCurrencyId, homeCurrencyId, startDate, endDate, isActive });
     setLabel('');
     setLocalCurrencyId(undefined);
@@ -45,119 +44,106 @@ export default function AddTrip({ onAdd }: AddTripProps) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{t('trips.addTrip')}</Text>
+    <View style={{ marginBottom: theme.spacing.xl }}>
+      <Text style={{ ...theme.typography.subtitle, marginBottom: theme.spacing.sm }}>
+        {t('trips.addTrip')}
+      </Text>
 
-      <Text style={styles.label}>{t('trips.tripName')}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder={t('trips.tripName')}
-        value={label}
-        onChangeText={setLabel}
-      />
+      <Field label={t('trips.tripName')}>
+        <Input value={label} onChangeText={setLabel} placeholder={t('trips.tripName')!} />
+      </Field>
 
-      <Text style={styles.label}>{t('trips.localCurrency')}</Text>
-      {currencies?.length ? (
-        <Picker
-          selectedValue={localCurrencyId}
-          onValueChange={(value) => setLocalCurrencyId(value)}
-          style={styles.picker}
-        >
-          <Picker.Item label={t('trips.localCurrencyPlaceholder')} value={undefined} />
-          {currencies.map((c) => (
-            <Picker.Item key={c.id} label={`${c.name} (${c.symbol})`} value={c.id} />
-          ))}
-        </Picker>
-      ) : (
-        <Text>{t('trips.currencies.loading')}</Text>
-      )}
-
-      <Text style={styles.label}>{t('trips.homeCurrency')}</Text>
-      {currencies?.length ? (
-        <Picker
-          selectedValue={homeCurrencyId}
-          onValueChange={(value) => setHomeCurrencyId(value)}
-          style={styles.picker}
-        >
-          <Picker.Item label={t('trips.homeCurrencyPlaceholder')} value={undefined} />
-          {currencies.map((c) => (
-            <Picker.Item key={c.id} label={`${c.name} (${c.symbol})`} value={c.id} />
-          ))}
-        </Picker>
-      ) : (
-        <Text>{t('trips.currencies.loading')}</Text>
-      )}
-
-      <Text style={styles.label}>{t('trips.startDate')}</Text>
-      <Button title={startDate.toDateString()} onPress={() => setShowStartPicker(true)} />
-      {showStartPicker && (
-        <DateTimePicker
-          value={startDate}
-          mode="date"
-          display="default"
-          onChange={(_, date) => {
-            setShowStartPicker(false);
-            if (date) setStartDate(date);
+      <Field label={t('trips.localCurrency')}>
+        <View
+          style={{
+            borderWidth: 1,
+            borderColor: theme.colors.neutral[200],
+            borderRadius: theme.radii.md,
+            overflow: 'hidden',
           }}
-        />
-      )}
+        >
+          <Picker selectedValue={localCurrencyId} onValueChange={(v) => setLocalCurrencyId(v)}>
+            <Picker.Item label={t('trips.localCurrencyPlaceholder')!} value={undefined} />
+            {currencies?.map((c) => (
+              <Picker.Item key={c.id} label={`${c.name} (${c.symbol})`} value={c.id} />
+            ))}
+          </Picker>
+        </View>
+      </Field>
 
-      <Text style={styles.label}>{t('trips.endDate')}</Text>
-      <Button
-        title={endDate ? endDate.toDateString() : t('trips.endDatePlaceholder')}
-        onPress={() => setShowEndPicker(true)}
-      />
-      {showEndPicker && (
-        <DateTimePicker
-          value={endDate || new Date()}
-          mode="date"
-          display="default"
-          onChange={(_, date) => {
-            setShowEndPicker(false);
-            if (date) setEndDate(date);
+      <Field label={t('trips.homeCurrency')}>
+        <View
+          style={{
+            borderWidth: 1,
+            borderColor: theme.colors.neutral[200],
+            borderRadius: theme.radii.md,
+            overflow: 'hidden',
           }}
-        />
-      )}
+        >
+          <Picker selectedValue={homeCurrencyId} onValueChange={(v) => setHomeCurrencyId(v)}>
+            <Picker.Item label={t('trips.homeCurrencyPlaceholder')!} value={undefined} />
+            {currencies?.map((c) => (
+              <Picker.Item key={c.id} label={`${c.name} (${c.symbol})`} value={c.id} />
+            ))}
+          </Picker>
+        </View>
+      </Field>
 
-      <View style={styles.switchContainer}>
-        <Text style={styles.label}>{t('trips.actif')}</Text>
-        <Switch value={isActive} onValueChange={setIsActive} />
+      <Field label={t('trips.startDate')}>
+        <Button
+          variant="soft"
+          label={startDate.toDateString()}
+          onPress={() => setShowStart(true)}
+        />
+        {showStart && (
+          <DateTimePicker
+            value={startDate}
+            mode="date"
+            onChange={(_, d) => {
+              setShowStart(false);
+              if (d) setStartDate(d);
+            }}
+          />
+        )}
+      </Field>
+
+      <Field label={t('trips.endDate')}>
+        <Button
+          variant="soft"
+          label={endDate ? endDate.toDateString() : t('trips.endDatePlaceholder')!}
+          onPress={() => setShowEnd(true)}
+        />
+        {showEnd && (
+          <DateTimePicker
+            value={endDate || new Date()}
+            mode="date"
+            onChange={(_, d) => {
+              setShowEnd(false);
+              setEndDate(d || undefined);
+            }}
+          />
+        )}
+      </Field>
+
+      <Field label={t('trips.actif')}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingVertical: theme.spacing.sm,
+          }}
+        >
+          <Text style={{ color: theme.colors.text.secondary }}>
+            {isActive ? t('trips.actif') : t('trips.actif')}
+          </Text>
+          <Switch value={isActive} onValueChange={setIsActive} />
+        </View>
+      </Field>
+
+      <View style={{ marginTop: theme.spacing.lg }}>
+        <Button label={t('trips.addButton')} onPress={submit} />
       </View>
-
-      <Button title={t('trips.addButton')} onPress={handleAdd} />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 24,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 12,
-  },
-  label: {
-    marginTop: 12,
-    fontWeight: '600',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 8,
-    borderRadius: 6,
-    marginTop: 4,
-  },
-  picker: {
-    marginTop: 4,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 6,
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 12,
-  },
-});

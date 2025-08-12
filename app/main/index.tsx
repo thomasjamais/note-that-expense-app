@@ -1,12 +1,20 @@
-import Expenses from '@/components/Expenses';
+import AddExpense from '@/components/Expenses/AddExpense';
+import ExpenseList from '@/components/Expenses/ExpenseList';
 import Skeleton from '@/components/Skeleton';
+import AppHeader from '@/components/ui/AppHeader';
+import IconButton from '@/components/ui/IconButton';
+import { Screen } from '@/components/ui/Screen';
 import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
 import { useGetCategories } from '@/hooks/useGetCategories';
+import { theme } from '@/theme';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
 export default function ExpenseTrackerScreen() {
   const { t } = useTranslation();
+  const [index, setIndex] = useState(0);
   const {
     data: activeTrip,
     isLoading: isActiveTripLoading,
@@ -27,7 +35,22 @@ export default function ExpenseTrackerScreen() {
   }
 
   return (
-    <>
+    <Screen>
+      <AppHeader
+        title={t('tabs.expenses')}
+        right={
+          <>
+            <IconButton onPress={() => setIndex(0)}>
+              <FontAwesome name="plus" size={16} color={theme.colors.text.primary} />
+            </IconButton>
+            <IconButton onPress={() => setIndex(1)}>
+              <FontAwesome name="calendar" size={16} color={theme.colors.text.primary} />
+            </IconButton>
+          </>
+        }
+        variant="large"
+        elevated
+      />
       {isActiveTripLoading || isCategoriesLoading ? (
         <>
           <View style={{ alignItems: 'center', marginVertical: 20 }}>
@@ -37,8 +60,16 @@ export default function ExpenseTrackerScreen() {
           </View>
         </>
       ) : (
-        <Expenses activeTrip={activeTrip!} categories={categories!} />
+        <ScrollView
+          contentContainerStyle={{ padding: theme.spacing.lg, paddingBottom: theme.spacing.xl }}
+        >
+          {index === 0 ? (
+            <AddExpense activeTrip={activeTrip!} categories={categories!} />
+          ) : (
+            <ExpenseList activeTrip={activeTrip!} categories={categories!} />
+          )}
+        </ScrollView>
       )}
-    </>
+    </Screen>
   );
 }

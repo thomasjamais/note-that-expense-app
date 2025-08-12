@@ -1,24 +1,16 @@
+import Skeleton from '@/components/Skeleton';
 import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
 import { PeriodRange, useGetPieChartForTripId } from '@/hooks/useGetPieChartForTripId';
+import { theme } from '@/theme';
 import { getNumberOfDaysInRange } from '@/utils/dates';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Text, View } from 'react-native';
-import Skeleton from '../Skeleton';
 import Categories from './Categories';
 import CategoryList from './CategoryList';
 import Chart from './Chart';
 
 const screenWidth = Dimensions.get('window').width;
-
-type PieProps = {
-  range: PeriodRange;
-  customStart?: string;
-  customEnd?: string;
-  selectedCategories: string[];
-  toggleCategory: (name: string) => void;
-  setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
-};
 
 export default function Pie({
   range,
@@ -27,10 +19,16 @@ export default function Pie({
   selectedCategories,
   toggleCategory,
   setSelectedCategories,
-}: PieProps) {
+}: {
+  range: PeriodRange;
+  customStart?: string;
+  customEnd?: string;
+  selectedCategories: string[];
+  toggleCategory: (n: string) => void;
+  setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
+}) {
   const { t } = useTranslation();
   const { data: activeTrip } = useGetActiveTrip();
-
   const {
     data: pieChartData,
     isLoading,
@@ -43,7 +41,6 @@ export default function Pie({
   );
 
   const filteredData = pieChartData?.filter((c: any) => selectedCategories.includes(c.name));
-
   const numberOfDaysInRange = getNumberOfDaysInRange(
     range,
     new Date(activeTrip?.startDate!),
@@ -51,20 +48,22 @@ export default function Pie({
     customEnd ? new Date(customEnd) : undefined,
   );
 
-  if (isError) {
+  if (isError)
     return (
-      <View>
-        <Text style={{ textAlign: 'center', color: 'red' }}>{t('pie.error')}</Text>
-      </View>
+      <Text style={{ color: theme.colors.danger[600], textAlign: 'center' }}>{t('pie.error')}</Text>
     );
-  }
 
   return (
     <View>
-      <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: 'bold', marginBottom: 8 }}>
+      <Text
+        style={{
+          ...theme.typography.subtitle,
+          textAlign: 'center',
+          marginBottom: theme.spacing.sm,
+        }}
+      >
         {t('pie.title')}
       </Text>
-
       {isLoading || !filteredData?.length ? (
         <View style={{ alignItems: 'center', marginVertical: 20 }}>
           <Skeleton width={screenWidth * 0.55} height={200} borderRadius={110} />
@@ -79,14 +78,13 @@ export default function Pie({
             setSelectedCategories={setSelectedCategories}
             toggleCategory={toggleCategory}
           />
-
-          <Text>
+          <Text style={{ color: theme.colors.text.secondary }}>
             {t('pie.totalOnPeriod', {
               total: filteredData.reduce((total, item) => item.population + total, 0).toFixed(2),
             })}{' '}
             {activeTrip?.homeCurrencySymbol}
           </Text>
-          <Text style={{ marginBottom: 10 }}>
+          <Text style={{ marginBottom: theme.spacing.sm, color: theme.colors.text.secondary }}>
             {t('pie.amountPerDay', {
               amount: (
                 filteredData.reduce((total, item) => item.population + total, 0) /
@@ -95,9 +93,7 @@ export default function Pie({
             })}{' '}
             {activeTrip?.homeCurrencySymbol}
           </Text>
-
           <Chart filteredData={filteredData!} />
-
           <CategoryList
             pieChartData={pieChartData!}
             selectedCategories={selectedCategories}

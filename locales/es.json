@@ -164,5 +164,23 @@
     },
     "actions": {
         "logout": "Cerrar sesión"
+    },
+    "common": {
+        "loading": "Cargando...",
+        "error": "Ocurrió un error",
+        "noData": "No hay datos disponibles",
+        "save": "Guardar",
+        "cancel": "Cancelar",
+        "close": "Cerrar",
+        "delete": "Eliminar",
+        "edit": "Editar",
+        "add": "Añadir",
+        "confirm": "Confirmar"
+    },
+    "timeRange": {
+        "total": "Total",
+        "week": "Semana",
+        "month": "Mes",
+        "custom": "Personalizado"
     }
 }

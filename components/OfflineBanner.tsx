@@ -15,12 +15,10 @@ export default function OfflineBanner() {
   const slide = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // initial fetch
     NetInfo.fetch().then((s) => {
       setState(s);
       setOffline(computeOffline(s));
     });
-    // subscribe
     const unsub = NetInfo.addEventListener((s) => {
       setState(s);
       setOffline(computeOffline(s));

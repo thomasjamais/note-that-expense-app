@@ -1,154 +1,144 @@
+import { useAddCategory, useDeleteCategory } from '@/components/CategoriesScreen/hook';
+import Button from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+import { Field } from '@/components/ui/Field';
+import { Input } from '@/components/ui/Input';
+import { ModalSheet } from '@/components/ui/ModalSheet';
 import { useGetCategories } from '@/hooks/useGetCategories';
-import { useState } from 'react';
+import { theme } from '@/theme';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Alert,
-  Button,
-  FlatList,
-  Modal,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import WheelColorPicker from 'react-native-wheel-color-picker';
-import { useAddCategory, useDeleteCategory } from './hook';
-
-type Category = {
-  id: string;
-  label: string;
-  color: string;
-};
 
 export default function CategoriesScreen() {
   const { t } = useTranslation();
-  const { data: categories } = useGetCategories();
-  const { mutate: addCategoryMutation } = useAddCategory();
-  const { mutate: deleteCategoryMutation } = useDeleteCategory();
+  const { data: categories = [] } = useGetCategories();
+  const { mutate: addCategory } = useAddCategory();
+  const { mutate: deleteCategory } = useDeleteCategory();
+
   const [label, setLabel] = useState('');
   const [color, setColor] = useState('#FF6347');
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [showPicker, setShowPicker] = useState(false);
+  const [pickerVisible, setPickerVisible] = useState(false);
 
-  const resetForm = () => {
+  const reset = () => {
     setLabel('');
     setColor('#FF6347');
     setEditingId(null);
   };
 
-  const handleAddOrUpdate = () => {
+  const submit = () => {
     if (!label.trim()) return;
-
-    addCategoryMutation({ label, color });
-
-    resetForm();
+    addCategory({ label, color });
+    reset();
   };
 
-  const handleEdit = (category: Category) => {
-    setLabel(category.label);
-    setColor(category.color);
-    setEditingId(category.id);
-  };
-
-  const handleDelete = (id: string) => {
+  const onDelete = (id: string) => {
     Alert.alert(t('categories.deleteConfirmation'), t('categories.deleteMessage'), [
       { text: t('categories.cancel'), style: 'cancel' },
       {
         text: t('categories.deleteCategory'),
         style: 'destructive',
         onPress: () => {
-          deleteCategoryMutation(id);
-          if (editingId === id) resetForm();
+          deleteCategory(id);
+          if (editingId === id) reset();
         },
       },
     ]);
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>
-        {editingId ? 'Modifier la catégorie' : 'Ajouter une catégorie'}
+    <View style={{ flex: 1, padding: theme.spacing.lg }}>
+      <Text style={{ ...theme.typography.title, marginBottom: theme.spacing.sm }}>
+        {editingId ? t('categories.editCategory') : t('categories.addCategory')}
       </Text>
 
-      <TextInput style={styles.input} placeholder="Label" value={label} onChangeText={setLabel} />
+      <Field label={t('categories.categoryName')}>
+        <Input placeholder={t('categories.categoryName')!} value={label} onChangeText={setLabel} />
+      </Field>
 
-      <TouchableOpacity
-        onPress={() => setShowPicker(true)}
-        style={[styles.previewColor, { backgroundColor: color }]}
-      >
-        <Text style={styles.previewText}>{t('categories.categoryColor')}</Text>
-      </TouchableOpacity>
+      <Field label={t('categories.categoryColor')}>
+        <TouchableOpacity onPress={() => setPickerVisible(true)}>
+          <View style={styles.colorPreviewRow}>
+            <View style={[styles.colorDot, { backgroundColor: color }]} />
+            <Text style={styles.colorText}>{t('categories.categoryColor')}</Text>
+          </View>
+        </TouchableOpacity>
+      </Field>
 
-      <View style={{ marginTop: 12 }}>
+      <View style={{ marginTop: theme.spacing.md }}>
         <Button
-          title={editingId ? t('categories.editCategory') : t('categories.addCategory')}
-          onPress={handleAddOrUpdate}
+          label={editingId ? t('categories.editCategory') : t('categories.addCategory')}
+          onPress={submit}
         />
         {editingId && (
-          <View style={{ marginTop: 8 }}>
-            <Button title={t('categories.cancel')} color="#888" onPress={resetForm} />
+          <View style={{ marginTop: theme.spacing.sm }}>
+            <Button label={t('categories.cancel')} variant="secondary" onPress={reset} />
           </View>
         )}
       </View>
 
-      <Text style={[styles.title, { marginTop: 24 }]}>{t('categories.title')}</Text>
+      <Text style={{ ...theme.typography.subtitle, marginTop: theme.spacing.xl }}>
+        {t('categories.title')}
+      </Text>
       <FlatList
+        style={{ marginTop: theme.spacing.sm }}
         data={categories}
         keyExtractor={(item) => item.id}
+        ItemSeparatorComponent={() => <View style={{ height: theme.spacing.sm }} />}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handleEdit(item)} style={styles.categoryItem}>
-            <View style={[styles.colorBox, { backgroundColor: item.color }]} />
-            <Text style={styles.categoryText}>{item.label}</Text>
-            <TouchableOpacity onPress={() => handleDelete(item.id)} style={styles.deleteButton}>
-              <Text style={{ color: 'red' }}>✕</Text>
+          <Card>
+            <TouchableOpacity
+              onPress={() => {
+                setEditingId(item.id);
+                setLabel(item.label);
+                setColor(item.color);
+              }}
+            >
+              <View style={styles.itemRow}>
+                <View style={[styles.colorDot, { backgroundColor: item.color }]} />
+                <Text style={styles.itemLabel}>{item.label}</Text>
+                <TouchableOpacity onPress={() => onDelete(item.id)}>
+                  <Text style={{ color: theme.colors.danger[600], fontWeight: '700' }}>✕</Text>
+                </TouchableOpacity>
+              </View>
             </TouchableOpacity>
-          </TouchableOpacity>
+          </Card>
         )}
       />
 
-      <Modal visible={showPicker} animationType="slide">
-        <View style={{ flex: 1, padding: 20, justifyContent: 'center', backgroundColor: '#fff' }}>
-          <WheelColorPicker
-            onColorChangeComplete={(selectedColor) => {
-              setColor(selectedColor);
-            }}
+      <ModalSheet visible={pickerVisible} onClose={() => setPickerVisible(false)}>
+        <Text style={{ ...theme.typography.title, marginBottom: theme.spacing.md }}>
+          {t('categories.categoryColor')}
+        </Text>
+        <WheelColorPicker color={color} onColorChangeComplete={(c: string) => setColor(c)} />
+        <View style={{ marginTop: theme.spacing.lg }}>
+          <Button label={t('common.save')} onPress={() => setPickerVisible(false)} />
+          <View style={{ height: theme.spacing.sm }} />
+          <Button
+            label={t('common.cancel')}
+            variant="secondary"
+            onPress={() => setPickerVisible(false)}
           />
-          <Button title="Valider" onPress={() => setShowPicker(false)} />
         </View>
-      </Modal>
+      </ModalSheet>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
-  title: { fontWeight: 'bold', fontSize: 18, marginBottom: 12 },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 8,
-    borderRadius: 6,
-    marginBottom: 8,
-  },
-  previewColor: {
-    marginVertical: 8,
-    padding: 10,
-    borderRadius: 6,
-    alignItems: 'center',
-  },
-  previewText: { color: '#fff', fontWeight: 'bold' },
-  categoryItem: {
+  colorPreviewRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
+    height: 48,
+    borderWidth: 1,
+    borderColor: theme.colors.neutral[200],
+    borderRadius: theme.radii.md,
+    paddingHorizontal: theme.spacing.md,
   },
-  colorBox: {
-    width: 24,
-    height: 24,
-    borderRadius: 4,
-    marginRight: 12,
-  },
-  categoryText: { fontSize: 16, flex: 1 },
-  deleteButton: { marginLeft: 12, padding: 4 },
+  colorDot: { width: 20, height: 20, borderRadius: 999, marginRight: theme.spacing.md },
+  colorText: { color: theme.colors.text.primary },
+  itemRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  itemLabel: { flex: 1, fontSize: 16, fontWeight: '600', color: theme.colors.text.primary },
 });

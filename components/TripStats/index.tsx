@@ -1,25 +1,18 @@
+import BudgetMain from '@/components/Budgets/BudgetMain';
+import StatCard from '@/components/DailyStats/StatCard';
+import Skeleton from '@/components/Skeleton';
 import { useGetCurrentBudgetUsageByTripId } from '@/hooks/budgets/useGetCurrentBudgetUsageByTripId';
 import { useGetTripStats } from '@/hooks/stats/useGetTripStats';
 import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
+import { theme } from '@/theme';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
-import BudgetMain from '../Budgets/BudgetMain';
-import StatCard from '../DailyStats/StatCard';
-import Skeleton from '../Skeleton';
+import { Text, View } from 'react-native';
 
-const screenWidth = Dimensions.get('window').width;
-
-type TripStatsProps = {};
-
-export default function TripStats({}: TripStatsProps) {
+export default function TripStats() {
   const { t } = useTranslation();
-
   const { data: activeTrip } = useGetActiveTrip();
-  const {
-    data: tripStats,
-    isLoading: isTripStatsLoading,
-    isError,
-  } = useGetTripStats(activeTrip?.id);
+  const { data: tripStats, isLoading, isError } = useGetTripStats(activeTrip?.id);
   const {
     data: budgetUsage,
     isLoading: isBudgetUsageLoading,
@@ -27,28 +20,31 @@ export default function TripStats({}: TripStatsProps) {
   } = useGetCurrentBudgetUsageByTripId(activeTrip?.id);
 
   if (isError) {
-    return (
-      <View>
-        <Text>{t('tripStats.noData')}</Text>
-      </View>
-    );
+    return <Text style={{ color: theme.colors.text.secondary }}>{t('tripStats.noData')}</Text>;
   }
-
-  if (isTripStatsLoading) {
-    return (
-      <View style={{ alignItems: 'center', marginVertical: 20 }}>
-        <Skeleton width={screenWidth * 0.55} height={200} borderRadius={110} />
-        <Skeleton width={120} height={20} style={{ marginTop: 10 }} />
-        <Skeleton width={80} height={20} style={{ marginTop: 6 }} />
-      </View>
-    );
+  if (isLoading) {
+    return (<Skeleton width={220} height={180} />) as any;
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>{t('tripStats.title', { trip: activeTrip?.label })}</Text>
-
-      <View style={styles.row}>
+    <View style={{ paddingTop: theme.spacing.md }}>
+      <Text
+        style={{
+          fontSize: 20,
+          fontWeight: '700',
+          marginBottom: theme.spacing.md,
+          textAlign: 'center',
+        }}
+      >
+        {t('tripStats.title', { trip: activeTrip?.label })}
+      </Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginBottom: theme.spacing.sm,
+        }}
+      >
         <StatCard icon="list" label={t('tripStats.days')} value={`${tripStats?.dayCount}`} />
         <StatCard
           icon="money"
@@ -56,8 +52,7 @@ export default function TripStats({}: TripStatsProps) {
           value={`${tripStats?.totalSpentConverted} ${activeTrip?.homeCurrencySymbol}`}
         />
       </View>
-
-      <View style={styles.row}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <StatCard
           icon="bar-chart"
           label={t('tripStats.averageDaily')}
@@ -77,22 +72,3 @@ export default function TripStats({}: TripStatsProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 24,
-    padding: 16,
-    backgroundColor: '#fff',
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-  },
-});

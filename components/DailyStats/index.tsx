@@ -1,40 +1,31 @@
+import BudgetProgressCircle from '@/components/Budgets/BudgetProgress';
+import StatCard from '@/components/DailyStats/StatCard';
+import Skeleton from '@/components/Skeleton';
 import { useGetCurrentBudgetUsageByTripId } from '@/hooks/budgets/useGetCurrentBudgetUsageByTripId';
 import { useGetDailyStats } from '@/hooks/stats/useGetDailyStats';
 import { useGetTripStats } from '@/hooks/stats/useGetTripStats';
 import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
+import { theme } from '@/theme';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
-import BudgetProgressCircle from '../Budgets/BudgetProgress';
-import Skeleton from '../Skeleton';
-import StatCard from './StatCard';
+import { Dimensions, Text, View } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
 
-type DailyStatsProps = {};
-
-export default function DailyStats({}: DailyStatsProps) {
-  const { data: activeTrip } = useGetActiveTrip();
-  const {
-    data: dailyStats,
-    isLoading: isDailyStatsLoading,
-    isError,
-  } = useGetDailyStats(activeTrip?.id);
+export default function DailyStats() {
   const { t } = useTranslation();
-
+  const { data: activeTrip } = useGetActiveTrip();
+  const { data: dailyStats, isLoading, isError } = useGetDailyStats(activeTrip?.id);
   const { data: tripStats } = useGetTripStats(activeTrip?.id);
   const { data: budgetUsage } = useGetCurrentBudgetUsageByTripId(activeTrip?.id);
 
-  const budgetSpentToday = dailyStats?.totalSpentConverted ?? 0;
-  const budgetAmount = Number(budgetUsage?.budgetAmount ?? 0) / (tripStats?.dayCount ?? 1);
-  if (isError) {
+  if (isError)
     return (
-      <View>
-        <Text>{t('dailyStats.error')}</Text>
-      </View>
+      <Text style={{ color: theme.colors.danger[600], textAlign: 'center' }}>
+        {t('dailyStats.error')}
+      </Text>
     );
-  }
-
-  if (isDailyStatsLoading) {
+  if (isLoading)
     return (
       <View style={{ alignItems: 'center', marginVertical: 20 }}>
         <Skeleton width={screenWidth * 0.55} height={200} borderRadius={110} />
@@ -42,19 +33,37 @@ export default function DailyStats({}: DailyStatsProps) {
         <Skeleton width={80} height={20} style={{ marginTop: 6 }} />
       </View>
     );
-  }
+
   const date = new Date(dailyStats?.day ?? 0);
   const formattedDate = isNaN(date.getTime()) ? '' : date.toLocaleDateString();
 
   const dailyAvg = dailyStats?.avgSpentConverted ?? 0;
   const tripAvg = tripStats?.avgDailySpentConverted ?? 0;
-  const diff = dailyAvg - tripAvg;
-  const percent = ((diff / tripAvg) * 100).toFixed(1);
+  const diff = dailyAvg - (tripAvg || 1);
+  const percent = ((diff / (tripAvg || 1)) * 100).toFixed(1);
+
+  const budgetSpentToday = dailyStats?.totalSpentConverted ?? 0;
+  const budgetAmount = Number(budgetUsage?.budgetAmount ?? 0) / (tripStats?.dayCount || 1);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>{t('dailyStats.dailyDigest', { date: formattedDate })}</Text>
-      <View style={styles.row}>
+    <View style={{ marginTop: theme.spacing.md }}>
+      <Text
+        style={{
+          ...theme.typography.subtitle,
+          textAlign: 'center',
+          marginBottom: theme.spacing.md,
+        }}
+      >
+        {t('dailyStats.dailyDigest', { date: formattedDate })}
+      </Text>
+
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginBottom: theme.spacing.sm,
+        }}
+      >
         <StatCard
           icon="list"
           label={t('dailyStats.expenses')}
@@ -65,18 +74,16 @@ export default function DailyStats({}: DailyStatsProps) {
           label={t('dailyStats.total')}
           value={`${dailyStats?.totalSpentConverted} ${activeTrip?.homeCurrencySymbol}`}
           arrow={(diff ?? 0) > 0 ? 'up' : 'down'}
-          tooltipTitle={
-            (diff ?? 0) > 0
-              ? t('dailyStats.up', {
-                  diff: `${percent}% (${diff.toFixed(2)} ${activeTrip?.homeCurrencySymbol})`,
-                })
-              : t('dailyStats.down', {
-                  diff: `${Math.abs(Number(percent))}% (${Math.abs(diff).toFixed(2)} ${activeTrip?.homeCurrencySymbol})`,
-                })
-          }
         />
       </View>
-      <View style={styles.row}>
+
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginBottom: theme.spacing.sm,
+        }}
+      >
         <StatCard
           icon="bar-chart"
           label={t('dailyStats.average')}
@@ -88,13 +95,15 @@ export default function DailyStats({}: DailyStatsProps) {
           value={`${dailyStats?.maxSpentConverted} ${activeTrip?.homeCurrencySymbol}`}
         />
       </View>
-      <View style={styles.row}>
+
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <StatCard
           icon="tags"
           label={t('dailyStats.topCategory')}
           value={dailyStats?.topCategory || 'NC'}
         />
       </View>
+
       <BudgetProgressCircle
         name={t('dailyStats.budgetComparison')}
         spent={Number(budgetSpentToday)}
@@ -104,22 +113,3 @@ export default function DailyStats({}: DailyStatsProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 24,
-    padding: 16,
-    backgroundColor: '#fff',
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-  },
-});

@@ -3,10 +3,8 @@ import { Redirect, Tabs } from 'expo-router';
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
-import { useColorScheme } from '@/components/useColorScheme';
-import Colors from '@/constants/Colors';
 import { useAuth } from '@/contexts/AuthContext';
+import { theme } from '@/theme';
 import { useTranslation } from 'react-i18next';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -19,7 +17,6 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const { t } = useTranslation();
-  const colorScheme = useColorScheme();
   const { token, isLoading } = useAuth();
 
   if (isLoading) {
@@ -37,8 +34,8 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: useClientOnlyValue(false, true),
+        tabBarActiveTintColor: theme.colors.primary[600],
+        headerShown: false,
       }}
     >
       <Tabs.Screen

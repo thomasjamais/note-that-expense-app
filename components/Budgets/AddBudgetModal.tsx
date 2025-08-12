@@ -1,7 +1,8 @@
-import Button from '@/components/Button';
+import { theme } from '@/theme';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
+import Button from '../ui/Button';
 
 type AddBudgetModalProps = {
   visible: boolean;
@@ -59,8 +60,17 @@ export default function AddBudgetModal({ visible, onClose, onAdd }: AddBudgetMod
             />
           </View>
 
-          <Button title={t('budgets.addOrEdit.add')} onPress={handleSubmit} />
-          <Button title={t('budgets.addOrEdit.cancel')} onPress={onClose} variant="error" />
+          <Button
+            label={t('budgets.addOrEdit.add')}
+            onPress={handleSubmit}
+            style={{ marginBottom: theme.spacing.sm }}
+          />
+          <Button
+            label={t('budgets.addOrEdit.cancel')}
+            onPress={onClose}
+            variant="link"
+            style={{ marginBottom: theme.spacing.sm }}
+          />
         </View>
       </View>
     </Modal>

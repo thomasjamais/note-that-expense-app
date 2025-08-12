@@ -1,4 +1,4 @@
-import Button from '@/components/Button';
+import Button from '@/components/ui/Button';
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import LoginScreen from './Login';
@@ -10,8 +10,8 @@ export default function AuthScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.switchButtons}>
-        <Button title="Connexion" onPress={() => setMode('login')} />
-        <Button title="Inscription" onPress={() => setMode('register')} />
+        <Button label="Connexion" onPress={() => setMode('login')} />
+        <Button label="Inscription" onPress={() => setMode('register')} />
       </View>
 
       <View style={styles.formContainer}>

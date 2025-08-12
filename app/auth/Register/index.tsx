@@ -1,4 +1,4 @@
-import Button from '@/components/Button';
+import Button from '@/components/ui/Button';
 import { useState } from 'react';
 import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useRegister } from './hook';
@@ -35,7 +35,7 @@ export default function RegisterScreen() {
         secureTextEntry
       />
 
-      <Button title={isPending ? 'Enregistrement...' : 'S’inscrire'} onPress={handleRegister} />
+      <Button label={isPending ? 'Enregistrement...' : 'S’inscrire'} onPress={handleRegister} />
       {isError && <Text style={styles.error}>Erreur : {(error as Error)?.message}</Text>}
     </View>
   );

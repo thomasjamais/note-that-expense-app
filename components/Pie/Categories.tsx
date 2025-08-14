@@ -1,51 +1,52 @@
 import { PieChartData } from '@/hooks/useGetPieChartForTripId';
 import { theme } from '@/theme';
-import React, { useEffect } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import { ScrollView, Text, TouchableOpacity } from 'react-native';
+
+type CategoriesProps = {
+  pieChartData: PieChartData[];
+  selectedCategories: string[];
+  toggleCategory: (name: string) => void;
+  setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
+};
 
 export default function Categories({
   pieChartData,
   selectedCategories,
   toggleCategory,
-  setSelectedCategories,
-}: {
-  pieChartData: PieChartData[];
-  selectedCategories: string[];
-  toggleCategory: (n: string) => void;
-  setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
-}) {
-  useEffect(() => {
-    if (pieChartData && selectedCategories.length === 0)
-      setSelectedCategories(pieChartData.map((c: any) => c.name));
-  }, [pieChartData, selectedCategories]);
+}: CategoriesProps) {
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        marginBottom: theme.spacing.sm,
-        gap: theme.spacing.xs,
-      }}
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{ gap: theme.spacing.xs, marginBottom: theme.spacing.sm }}
     >
-      {pieChartData?.map((cat: any) => {
+      {pieChartData?.map((cat) => {
         const active = selectedCategories.includes(cat.name);
         return (
           <TouchableOpacity
             key={cat.name}
             onPress={() => toggleCategory(cat.name)}
             style={{
-              paddingVertical: 6,
-              paddingHorizontal: 12,
+              paddingVertical: 8,
+              paddingHorizontal: 14,
               borderRadius: 999,
-              backgroundColor: active ? cat.color : theme.colors.neutral[200],
+              borderWidth: 1,
+              borderColor: active ? cat.color : theme.colors.neutral[200],
+              backgroundColor: active ? cat.color + '22' : theme.colors.surface,
             }}
           >
-            <Text style={{ color: active ? theme.colors.neutral[900] : theme.colors.text.primary }}>
+            <Text
+              style={{
+                fontFamily: theme.typography.family.medium,
+                color: active ? theme.colors.text.primary : theme.colors.text.secondary,
+              }}
+            >
               {cat.name}
             </Text>
           </TouchableOpacity>
         );
       })}
-    </View>
+    </ScrollView>
   );
 }

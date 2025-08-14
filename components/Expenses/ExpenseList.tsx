@@ -1,3 +1,4 @@
+import ExpenseListSkeleton from '@/components/Expenses/ExpenseListSkeleton';
 import HandleExpenseModal from '@/components/Expenses/HandleExpenseModal';
 import { Card } from '@/components/ui/Card';
 import { TripWithCurrencies } from '@/hooks/useGetActiveTrip';
@@ -16,9 +17,17 @@ export default function ExpenseList({
   categories: Category[];
 }) {
   const { t } = useTranslation();
-  const { data: expenses = [] } = useGetExpensesByTripId(activeTrip?.id || '');
+  const {
+    data: expenses = [],
+    isLoading,
+    isFetching,
+  } = useGetExpensesByTripId(activeTrip?.id || '');
   const [selectedExpense, setSelectedExpense] = useState<any | null>(null);
   const [visible, setVisible] = useState(false);
+
+  if (isLoading || isFetching) {
+    return <ExpenseListSkeleton rows={6} />;
+  }
 
   return (
     <View>
@@ -30,9 +39,11 @@ export default function ExpenseList({
       >
         {t('expenses.addedExpenses')}
       </Text>
-      {!expenses.length && (
+      {!expenses.length && !isFetching && (
         <Text style={{ color: theme.colors.text.secondary }}>{t('expenses.noExpenses')}</Text>
       )}
+
+      {!expenses.length && isFetching && <ExpenseListSkeleton rows={4} />}
 
       {expenses.map((item) => (
         <TouchableOpacity

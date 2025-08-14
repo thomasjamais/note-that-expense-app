@@ -1,62 +1,61 @@
+import FancyCard from '@/components/ui/FancyCard';
 import { theme } from '@/theme';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
-const Arrow = ({ direction }: { direction: 'up' | 'down' }) => (
-  <View
-    style={[
-      styles.arrow,
-      {
-        backgroundColor: direction === 'up' ? theme.colors.danger[100] : theme.colors.success[100],
-      },
-    ]}
-  />
-);
+import { Text, View } from 'react-native';
 
 export default function StatCard({
   icon,
   label,
   value,
   arrow,
-  color = theme.colors.text.secondary,
+  color = theme.colors.primary[700],
+  variant = 'elevated',
 }: {
   icon: React.ComponentProps<typeof FontAwesome>['name'];
   label: string;
   value: string;
   arrow?: 'up' | 'down';
   color?: string;
+  variant?: 'elevated' | 'gradient' | 'glass' | 'outline';
 }) {
+  const Arrow = arrow ? (
+    <FontAwesome
+      name={arrow === 'down' ? 'long-arrow-up' : 'long-arrow-down'}
+      size={12}
+      color={arrow === 'down' ? theme.colors.danger[500] : theme.colors.success[600]}
+      style={{ marginLeft: 6 }}
+    />
+  ) : null;
+
   return (
-    <View style={styles.card}>
-      <FontAwesome name={icon} size={22} color={color} />
-      <Text style={styles.label}>{label}</Text>
-      {!!arrow && <Arrow direction={arrow} />}
-      <Text style={styles.value}>{value}</Text>
-    </View>
+    <FancyCard compact variant={variant} style={{ flex: 1, marginHorizontal: 4 }} minHeight={96}>
+      <View style={{ alignItems: 'center' }}>
+        <FontAwesome name={icon} size={22} color={color} />
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 6 }}>
+          <Text
+            style={{
+              fontFamily: theme.typography.family.medium,
+              fontSize: 12,
+              color: theme.colors.text.secondary,
+            }}
+            numberOfLines={1}
+          >
+            {label}
+          </Text>
+          {Arrow}
+        </View>
+        <Text
+          style={{
+            marginTop: 4,
+            fontFamily: theme.typography.family.bold,
+            fontSize: 16,
+            color: theme.colors.text.primary,
+          }}
+        >
+          {value}
+        </Text>
+      </View>
+    </FancyCard>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    flex: 1,
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.radii.lg,
-    padding: theme.spacing.md,
-    marginHorizontal: theme.spacing.xs,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
-  },
-  label: { marginTop: 6, fontSize: 12, color: theme.colors.text.secondary },
-  value: { marginTop: 4, fontSize: 16, fontWeight: '700', color: theme.colors.text.primary },
-  arrow: {
-    width: 10,
-    height: 10,
-    borderRadius: 999,
-    marginTop: 6,
-  },
-});

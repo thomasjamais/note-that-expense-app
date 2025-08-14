@@ -1,16 +1,25 @@
-import Skeleton from '@/components/Skeleton';
 import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
 import { PeriodRange, useGetPieChartForTripId } from '@/hooks/useGetPieChartForTripId';
 import { theme } from '@/theme';
 import { getNumberOfDaysInRange } from '@/utils/dates';
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Text, View } from 'react-native';
+import { Dimensions, ScrollView, Text, View } from 'react-native';
+import Skeleton from '../ui/Skeleton';
 import Categories from './Categories';
 import CategoryList from './CategoryList';
-import Chart from './Chart';
+import DonutChart from './DonutChart';
 
 const screenWidth = Dimensions.get('window').width;
+
+type PieProps = {
+  range: PeriodRange;
+  customStart?: string;
+  customEnd?: string;
+  selectedCategories: string[];
+  toggleCategory: (name: string) => void;
+  setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
+};
 
 export default function Pie({
   range,
@@ -19,88 +28,124 @@ export default function Pie({
   selectedCategories,
   toggleCategory,
   setSelectedCategories,
-}: {
-  range: PeriodRange;
-  customStart?: string;
-  customEnd?: string;
-  selectedCategories: string[];
-  toggleCategory: (n: string) => void;
-  setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
-}) {
+}: PieProps) {
   const { t } = useTranslation();
   const { data: activeTrip } = useGetActiveTrip();
-  const {
-    data: pieChartData,
-    isLoading,
-    isError,
-  } = useGetPieChartForTripId(
+
+  const { data, isLoading, isError } = useGetPieChartForTripId(
     activeTrip?.id,
     range,
     customStart ? new Date(customStart) : undefined,
     customEnd ? new Date(customEnd) : undefined,
   );
 
-  const filteredData = pieChartData?.filter((c: any) => selectedCategories.includes(c.name));
-  const numberOfDaysInRange = getNumberOfDaysInRange(
-    range,
-    new Date(activeTrip?.startDate!),
-    customStart ? new Date(customStart) : undefined,
-    customEnd ? new Date(customEnd) : undefined,
+  const numberOfDaysInRange = useMemo(
+    () =>
+      getNumberOfDaysInRange(
+        range,
+        new Date(activeTrip?.startDate!),
+        customStart ? new Date(customStart) : undefined,
+        customEnd ? new Date(customEnd) : undefined,
+      ),
+    [range, activeTrip?.startDate, customStart, customEnd],
   );
 
-  if (isError)
+  useEffect(() => {
+    if (data && selectedCategories.length === 0) {
+      setSelectedCategories(data.map((c: any) => c.name));
+    }
+  }, [data, selectedCategories.length, setSelectedCategories]);
+
+  const filtered = useMemo(
+    () => data?.filter((c: any) => selectedCategories.includes(c.name)) ?? [],
+    [data, selectedCategories],
+  );
+
+  const total = useMemo(
+    () => filtered.reduce((sum, it) => sum + (it.population || 0), 0),
+    [filtered],
+  );
+
+  const [activeSlice, setActiveSlice] = useState<string | null>(null);
+
+  if (isError) {
     return (
       <Text style={{ color: theme.colors.danger[600], textAlign: 'center' }}>{t('pie.error')}</Text>
     );
+  }
+
+  if (isLoading || !data) {
+    return (
+      <View style={{ alignItems: 'center', marginVertical: 20 }}>
+        <Skeleton width={screenWidth * 0.55} height={200} borderRadius={110} />
+        <Skeleton width={180} height={18} style={{ marginTop: 10 }} />
+        <Skeleton width={120} height={18} style={{ marginTop: 6 }} />
+      </View>
+    );
+  }
+
+  const centerInfo = (() => {
+    const found = filtered.find((f) => f.name === activeSlice);
+    if (!found) {
+      return {
+        title: t('pie.title'),
+        value: `${total.toFixed(2)} ${activeTrip?.homeCurrencySymbol}`,
+        note:
+          numberOfDaysInRange > 0
+            ? `${t(
+                'tripStats.averageDaily',
+              )} : ${(total / numberOfDaysInRange).toFixed(2)} ${activeTrip?.homeCurrencySymbol}`
+            : '',
+      };
+    }
+    const pct = total > 0 ? Math.round((found.population / total) * 100) : 0;
+    return {
+      title: found.name,
+      value: `${found.population.toFixed(2)} ${activeTrip?.homeCurrencySymbol}`,
+      note: `${pct}%`,
+    };
+  })();
 
   return (
-    <View>
+    <ScrollView style={{ paddingTop: theme.spacing.md }}>
       <Text
         style={{
           ...theme.typography.subtitle,
           textAlign: 'center',
-          marginBottom: theme.spacing.sm,
+          marginBottom: theme.spacing.md,
         }}
       >
         {t('pie.title')}
       </Text>
-      {isLoading || !filteredData?.length ? (
-        <View style={{ alignItems: 'center', marginVertical: 20 }}>
-          <Skeleton width={screenWidth * 0.55} height={200} borderRadius={110} />
-          <Skeleton width={120} height={20} style={{ marginTop: 10 }} />
-          <Skeleton width={80} height={20} style={{ marginTop: 6 }} />
-        </View>
+
+      <Categories
+        pieChartData={data}
+        selectedCategories={selectedCategories}
+        setSelectedCategories={setSelectedCategories}
+        toggleCategory={toggleCategory}
+      />
+
+      {filtered.length === 0 ? (
+        <Text style={{ textAlign: 'center', color: theme.colors.text.secondary }}>
+          {t('pie.noCategory')}
+        </Text>
       ) : (
-        <>
-          <Categories
-            pieChartData={pieChartData!}
-            selectedCategories={selectedCategories}
-            setSelectedCategories={setSelectedCategories}
-            toggleCategory={toggleCategory}
-          />
-          <Text style={{ color: theme.colors.text.secondary }}>
-            {t('pie.totalOnPeriod', {
-              total: filteredData.reduce((total, item) => item.population + total, 0).toFixed(2),
-            })}{' '}
-            {activeTrip?.homeCurrencySymbol}
-          </Text>
-          <Text style={{ marginBottom: theme.spacing.sm, color: theme.colors.text.secondary }}>
-            {t('pie.amountPerDay', {
-              amount: (
-                filteredData.reduce((total, item) => item.population + total, 0) /
-                numberOfDaysInRange
-              ).toFixed(2),
-            })}{' '}
-            {activeTrip?.homeCurrencySymbol}
-          </Text>
-          <Chart filteredData={filteredData!} />
-          <CategoryList
-            pieChartData={pieChartData!}
-            selectedCategories={selectedCategories}
-            toggleCategory={toggleCategory}
-          />
-        </>
+        <DonutChart
+          data={filtered}
+          total={total}
+          onSlicePress={setActiveSlice}
+          activeName={activeSlice}
+          centerTitle={centerInfo.title}
+          centerValue={centerInfo.value}
+          centerNote={centerInfo.note}
+        />
       )}
-    </View>
+
+      <CategoryList
+        pieChartData={filtered}
+        selectedCategories={selectedCategories}
+        toggleCategory={toggleCategory}
+      />
+    </ScrollView>
   );
 }

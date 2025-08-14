@@ -4,12 +4,10 @@ import { StyleSheet, Text, View } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 export default function BudgetProgressCircle({
-  name,
   amount,
   spent,
   currencySymbol = '€',
 }: {
-  name: string;
   amount: number;
   spent: number;
   currencySymbol?: string;
@@ -19,13 +17,11 @@ export default function BudgetProgressCircle({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.name}>{name}</Text>
       <AnimatedCircularProgress
         size={140}
         width={12}
         fill={Math.min(percent, 100)}
         tintColor={isOver ? theme.colors.danger[600] : theme.colors.success[700]}
-        backgroundColor={theme.colors.neutral[200]}
         rotation={0}
         lineCap="round"
       >
@@ -51,11 +47,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
     padding: theme.spacing.lg,
     borderRadius: theme.radii.xl,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
   },
   name: {
     fontSize: 16,

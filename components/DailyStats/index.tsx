@@ -1,6 +1,5 @@
 import BudgetProgressCircle from '@/components/Budgets/BudgetProgress';
 import StatCard from '@/components/DailyStats/StatCard';
-import Skeleton from '@/components/Skeleton';
 import { useGetCurrentBudgetUsageByTripId } from '@/hooks/budgets/useGetCurrentBudgetUsageByTripId';
 import { useGetDailyStats } from '@/hooks/stats/useGetDailyStats';
 import { useGetTripStats } from '@/hooks/stats/useGetTripStats';
@@ -9,13 +8,15 @@ import { theme } from '@/theme';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Text, View } from 'react-native';
+import FancyCard from '../ui/FancyCard';
+import DailyStatsSkeleton from './DailyStatsSkeleton';
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function DailyStats() {
   const { t } = useTranslation();
   const { data: activeTrip } = useGetActiveTrip();
-  const { data: dailyStats, isLoading, isError } = useGetDailyStats(activeTrip?.id);
+  const { data: dailyStats, isLoading, isError, isFetching } = useGetDailyStats(activeTrip?.id);
   const { data: tripStats } = useGetTripStats(activeTrip?.id);
   const { data: budgetUsage } = useGetCurrentBudgetUsageByTripId(activeTrip?.id);
 
@@ -25,14 +26,7 @@ export default function DailyStats() {
         {t('dailyStats.error')}
       </Text>
     );
-  if (isLoading)
-    return (
-      <View style={{ alignItems: 'center', marginVertical: 20 }}>
-        <Skeleton width={screenWidth * 0.55} height={200} borderRadius={110} />
-        <Skeleton width={120} height={20} style={{ marginTop: 10 }} />
-        <Skeleton width={80} height={20} style={{ marginTop: 6 }} />
-      </View>
-    );
+  if (isLoading || isFetching) return <DailyStatsSkeleton />;
 
   const date = new Date(dailyStats?.day ?? 0);
   const formattedDate = isNaN(date.getTime()) ? '' : date.toLocaleDateString();
@@ -51,7 +45,7 @@ export default function DailyStats() {
         style={{
           ...theme.typography.subtitle,
           textAlign: 'center',
-          marginBottom: theme.spacing.md,
+          marginBottom: theme.spacing.lg,
         }}
       >
         {t('dailyStats.dailyDigest', { date: formattedDate })}
@@ -74,6 +68,7 @@ export default function DailyStats() {
           label={t('dailyStats.total')}
           value={`${dailyStats?.totalSpentConverted} ${activeTrip?.homeCurrencySymbol}`}
           arrow={(diff ?? 0) > 0 ? 'up' : 'down'}
+          variant="gradient"
         />
       </View>
 
@@ -88,11 +83,13 @@ export default function DailyStats() {
           icon="bar-chart"
           label={t('dailyStats.average')}
           value={`${Number(dailyStats?.avgSpentConverted).toFixed(2)} ${activeTrip?.homeCurrencySymbol}`}
+          variant="elevated"
         />
         <StatCard
           icon="star"
           label={t('dailyStats.biggest')}
           value={`${dailyStats?.maxSpentConverted} ${activeTrip?.homeCurrencySymbol}`}
+          variant="outline"
         />
       </View>
 
@@ -104,12 +101,17 @@ export default function DailyStats() {
         />
       </View>
 
-      <BudgetProgressCircle
-        name={t('dailyStats.budgetComparison')}
-        spent={Number(budgetSpentToday)}
-        amount={Number(budgetAmount)}
-        currencySymbol={activeTrip?.homeCurrencySymbol}
-      />
+      <FancyCard
+        variant="glass"
+        title={t('dailyStats.budgetComparison')}
+        style={{ marginTop: theme.spacing.md }}
+      >
+        <BudgetProgressCircle
+          spent={Number(budgetSpentToday)}
+          amount={Number(budgetAmount)}
+          currencySymbol={activeTrip?.homeCurrencySymbol}
+        />
+      </FancyCard>
     </View>
   );
 }

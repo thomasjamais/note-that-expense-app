@@ -1,6 +1,5 @@
 import BudgetMain from '@/components/Budgets/BudgetMain';
 import StatCard from '@/components/DailyStats/StatCard';
-import Skeleton from '@/components/Skeleton';
 import { useGetCurrentBudgetUsageByTripId } from '@/hooks/budgets/useGetCurrentBudgetUsageByTripId';
 import { useGetTripStats } from '@/hooks/stats/useGetTripStats';
 import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
@@ -8,11 +7,12 @@ import { theme } from '@/theme';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
+import TripStatsSkeleton from './TripStatsSkeleton';
 
 export default function TripStats() {
   const { t } = useTranslation();
   const { data: activeTrip } = useGetActiveTrip();
-  const { data: tripStats, isLoading, isError } = useGetTripStats(activeTrip?.id);
+  const { data: tripStats, isLoading, isError, isFetching } = useGetTripStats(activeTrip?.id);
   const {
     data: budgetUsage,
     isLoading: isBudgetUsageLoading,
@@ -22,17 +22,16 @@ export default function TripStats() {
   if (isError) {
     return <Text style={{ color: theme.colors.text.secondary }}>{t('tripStats.noData')}</Text>;
   }
-  if (isLoading) {
-    return (<Skeleton width={220} height={180} />) as any;
+  if (isLoading || isFetching) {
+    return <TripStatsSkeleton />;
   }
 
   return (
     <View style={{ paddingTop: theme.spacing.md }}>
       <Text
         style={{
-          fontSize: 20,
-          fontWeight: '700',
-          marginBottom: theme.spacing.md,
+          ...theme.typography.subtitle,
+          marginBottom: theme.spacing.lg,
           textAlign: 'center',
         }}
       >
@@ -50,6 +49,7 @@ export default function TripStats() {
           icon="money"
           label={t('tripStats.total')}
           value={`${tripStats?.totalSpentConverted} ${activeTrip?.homeCurrencySymbol}`}
+          variant="gradient"
         />
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>

@@ -1,7 +1,13 @@
 const { getDefaultConfig } = require('expo/metro-config');
 
-module.exports = (() => {
-  const config = getDefaultConfig(__dirname);
-  config.resolver.sourceExts.push('cjs');
-  return config;
-})();
+const config = getDefaultConfig(__dirname);
+
+config.resolver = {
+  ...config.resolver,
+  alias: {
+    ...(config.resolver?.alias || {}),
+    'react-native-linear-gradient': 'expo-linear-gradient',
+  },
+};
+
+module.exports = config;

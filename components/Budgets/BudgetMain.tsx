@@ -7,6 +7,7 @@ import { theme } from '@/theme';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Text, View } from 'react-native';
+import FancyCard from '../ui/FancyCard';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -23,7 +24,7 @@ export default function BudgetMain({
   const { data: activeTrip } = useGetActiveTrip();
 
   return (
-    <View style={{ marginTop: theme.spacing.xl }}>
+    <View style={{ marginTop: theme.spacing.xxl }}>
       {isBudgetUsageError && (
         <Text style={{ color: theme.colors.danger[600], textAlign: 'center' }}>
           {t('budgets.errorOne')}
@@ -40,9 +41,8 @@ export default function BudgetMain({
         <View>
           <Text
             style={{
-              fontSize: 20,
-              fontWeight: '700',
-              marginBottom: theme.spacing.md,
+              ...theme.typography.subtitle,
+              marginBottom: theme.spacing.lg,
               textAlign: 'center',
             }}
           >
@@ -52,39 +52,39 @@ export default function BudgetMain({
                   month: new Date().toLocaleString('default', { month: 'long' }),
                 })}
           </Text>
-          <BudgetProgressCircle
-            name={budgetUsage.name}
-            spent={Number(budgetUsage.spentConverted)}
-            amount={Number(budgetUsage.budgetAmount)}
-            currencySymbol={activeTrip?.homeCurrencySymbol}
-          />
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginTop: theme.spacing.md,
-            }}
-          >
-            <StatCard
-              icon="money"
-              label={t('budgets.plannedBudget')}
-              value={`${budgetUsage.budgetAmount} ${activeTrip?.homeCurrencySymbol}`}
+          <FancyCard variant="glass" title={budgetUsage.name} style={{ marginTop: 12 }}>
+            <BudgetProgressCircle
+              spent={Number(budgetUsage?.spentConverted)}
+              amount={Number(budgetUsage?.budgetAmount)}
+              currencySymbol={activeTrip?.homeCurrencySymbol}
             />
-            {Number(budgetUsage.spentConverted) > Number(budgetUsage.budgetAmount) ? (
+
+            <View style={{ flexDirection: 'row', gap: 8 }}>
               <StatCard
-                icon="exclamation-circle"
-                label={t('budgets.overpassed')}
-                value={`${Number(budgetUsage.spentConverted) - Number(budgetUsage.budgetAmount) || 0} ${activeTrip?.homeCurrencySymbol}`}
-                color={theme.colors.danger[600]}
+                icon="money"
+                label={t('budgets.plannedBudget')}
+                value={`${budgetUsage?.budgetAmount} ${activeTrip?.homeCurrencySymbol}`}
+                variant="outline"
               />
-            ) : (
-              <StatCard
-                icon="check-circle"
-                label={t('budgets.expenses')}
-                value={`${budgetUsage.spentConverted} ${activeTrip?.homeCurrencySymbol}`}
-              />
-            )}
-          </View>
+              {Number(budgetUsage?.spentConverted) > Number(budgetUsage?.budgetAmount) ? (
+                <StatCard
+                  icon="exclamation-circle"
+                  label={t('budgets.overpassed')}
+                  value={`${(Number(budgetUsage?.spentConverted) - Number(budgetUsage?.budgetAmount)).toFixed(0)} ${activeTrip?.homeCurrencySymbol}`}
+                  color={theme.colors.danger[600]}
+                  variant="gradient"
+                />
+              ) : (
+                <StatCard
+                  icon="check-circle"
+                  label={t('budgets.expenses')}
+                  value={`${budgetUsage?.spentConverted} ${activeTrip?.homeCurrencySymbol}`}
+                  color={theme.colors.success[700]}
+                  variant="elevated"
+                />
+              )}
+            </View>
+          </FancyCard>
         </View>
       )}
     </View>

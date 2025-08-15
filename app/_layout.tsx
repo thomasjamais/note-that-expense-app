@@ -12,9 +12,8 @@ import {
 } from '@expo-google-fonts/plus-jakarta-sans';
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-// import { useFonts } from 'expo-font';
-import { Slot } from 'expo-router';
-import { useEffect } from 'react';
+import { Slot, usePathname, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 
 import OfflineBanner from '@/components/OfflineBanner';
@@ -22,6 +21,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { SnackbarProvider } from '@/contexts/SnackbarContext';
 import { ThemeProviderCustom } from '@/contexts/ThemeContext';
+import { getHasSeenOnboarding } from '@/lib/onboarding';
 import NetInfo from '@react-native-community/netinfo';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { flushExpenses } from '../lib/offlineQueue';
@@ -32,6 +32,25 @@ export { ErrorBoundary } from 'expo-router';
 export const unstable_settings = {
   initialRouteName: 'SplashScreen',
 };
+
+function OnboardingGate({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const seen = await getHasSeenOnboarding();
+      if (!seen && !pathname?.startsWith('/onboarding')) {
+        router.replace('/onboarding');
+      }
+      setReady(true);
+    })();
+  }, [pathname]);
+
+  if (!ready) return null;
+  return <>{children}</>;
+}
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -76,7 +95,9 @@ function RootLayoutNav() {
         <AuthProvider>
           <LanguageProvider>
             <ThemeProviderCustom>
-              <Slot />
+              <OnboardingGate>
+                <Slot />
+              </OnboardingGate>
             </ThemeProviderCustom>
           </LanguageProvider>
         </AuthProvider>

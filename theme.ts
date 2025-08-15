@@ -53,7 +53,6 @@ export interface Theme {
 
 export const theme: Theme = {
   colors: {
-    // Jade primary
     primary: {
       50: '#E6FAF4',
       100: '#CFF5EA',
@@ -66,7 +65,6 @@ export const theme: Theme = {
       800: '#007D62',
       900: '#005C48',
     },
-    // Sky secondary
     secondary: {
       50: '#F0F7FF',
       100: '#E0EFFF',
@@ -127,11 +125,11 @@ export const theme: Theme = {
       800: '#1F2937',
       900: '#111827',
     },
-    background: '#F6F7F9',
+    background: '#F9FAFB',
     surface: '#FFFFFF',
     text: {
-      primary: '#1B1F23',
-      secondary: '#5A6472',
+      primary: '#2D3436',
+      secondary: '#636E72',
       muted: '#8E99A3',
       inverted: '#FFFFFF',
     },
@@ -148,7 +146,7 @@ export const theme: Theme = {
     },
     title: { fontSize: 24, lineHeight: 30, fontWeight: '700' },
     subtitle: { fontSize: 18, lineHeight: 24, fontWeight: '600' },
-    body: { fontSize: 15, lineHeight: 22, fontWeight: '400' },
+    body: { fontSize: 16, lineHeight: 22, fontWeight: '400' },
     small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
     code: { fontSize: 13, lineHeight: 18, fontWeight: '500' },
   },
@@ -178,7 +176,7 @@ export const theme: Theme = {
   hitSlop: { top: 6, bottom: 6, left: 6, right: 6 },
 };
 
-export type Variant = 'primary' | 'secondary' | 'soft' | 'link' | 'destructive';
+export type Variant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive';
 export type Size = 'sm' | 'md' | 'lg';
 
 export const tokens = {

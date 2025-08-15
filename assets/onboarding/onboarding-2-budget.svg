@@ -1,0 +1,37 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F0F7FF"/>
+      <stop offset="100%" stop-color="#E6FAF4"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00B894"/>
+      <stop offset="100%" stop-color="#10D19A"/>
+    </linearGradient>
+    <linearGradient id="danger" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFB020"/>
+      <stop offset="100%" stop-color="#FF4D4D"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#g2)"/>
+  <!-- card -->
+  <g transform="translate(200,160)">
+    <rect rx="48" width="624" height="704" fill="#FFFFFF" stroke="#B9DBFF" stroke-width="4"/>
+    <text x="312" y="86" font-size="40" text-anchor="middle" fill="#2D3436" font-family="PlusJakartaSans_700">Budget</text>
+    <!-- progress circle -->
+    <g transform="translate(312,360)">
+      <circle r="160" cx="0" cy="0" fill="none" stroke="#E5E7EB" stroke-width="28"/>
+      <path d="M 0 -160 A 160 160 0 1 1 120 120" stroke="url(#ring)" stroke-width="28" fill="none" stroke-linecap="round"/>
+      <path d="M 120 120 A 160 160 0 0 1 0 160" stroke="url(#danger)" stroke-width="28" fill="none" stroke-linecap="round"/>
+      <text x="0" y="8" font-size="44" text-anchor="middle" fill="#2D3436" font-family="PlusJakartaSans_700">72%</text>
+      <text x="0" y="48" font-size="20" text-anchor="middle" fill="#636E72" font-family="PlusJakartaSans_400">utilisé</text>
+    </g>
+    <!-- chips -->
+    <g transform="translate(112,580)">
+      <rect width="180" height="40" rx="20" fill="#E6FAF4"/><text x="90" y="26" font-size="16" fill="#005C48" text-anchor="middle" font-family="PlusJakartaSans_600">Planifié</text>
+      <g transform="translate(212,0)">
+        <rect width="200" height="40" rx="20" fill="#F0F7FF"/><text x="100" y="26" font-size="16" fill="#154E89" text-anchor="middle" font-family="PlusJakartaSans_600">Dépensé</text>
+      </g>
+    </g>
+  </g>
+</svg>

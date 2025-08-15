@@ -1,4 +1,5 @@
 import Button from '@/components/ui/Button';
+import SafeLottieLazy from '@/components/ui/SafeLottieLazy';
 import { setHasSeenOnboarding } from '@/lib/onboarding';
 import { theme } from '@/theme';
 import { useRouter } from 'expo-router';
@@ -45,7 +46,7 @@ export default function OnboardingScreen() {
         showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={onScroll}
       >
-        {slides.map((s) => (
+        {slides.map((s, i) => (
           <View
             key={s.key}
             style={{
@@ -54,7 +55,7 @@ export default function OnboardingScreen() {
               justifyContent: 'center',
             }}
           >
-            <View style={{ alignItems: 'center', marginBottom: 24 }}>
+            <View style={{ alignItems: 'center', marginBottom: 24, height: ART_SIZE }}>
               {s.artType === 'lottie' ? (
                 <SafeLottieLazy
                   visible={index === i}

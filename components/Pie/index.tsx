@@ -107,7 +107,7 @@ export default function Pie({
   })();
 
   return (
-    <ScrollView style={{ paddingTop: theme.spacing.md }}>
+    <ScrollView style={{ paddingTop: theme.spacing.md }} keyboardShouldPersistTaps="handled">
       <Text
         style={{
           ...theme.typography.subtitle,

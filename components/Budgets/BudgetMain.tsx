@@ -4,9 +4,11 @@ import Skeleton from '@/components/Skeleton';
 import { BudgetUsage } from '@/hooks/budgets/useGetCurrentBudgetUsageByTripId';
 import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
 import { theme } from '@/theme';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Text, View } from 'react-native';
+import EmptyState from '../ui/EmptyState';
 import FancyCard from '../ui/FancyCard';
 
 const screenWidth = Dimensions.get('window').width;
@@ -22,13 +24,26 @@ export default function BudgetMain({
 }) {
   const { t } = useTranslation();
   const { data: activeTrip } = useGetActiveTrip();
+  const router = useRouter();
 
   return (
     <View style={{ marginTop: theme.spacing.xxl }}>
       {isBudgetUsageError && (
-        <Text style={{ color: theme.colors.danger[600], textAlign: 'center' }}>
-          {t('budgets.errorOne')}
-        </Text>
+        <EmptyState
+          title={t('budgets.noBudgetsTitle')}
+          description={t('budgets.noBudgetsDesc')}
+          illustration="clipboard"
+          primaryAction={{
+            label: t('budgets.addOrEdit.title'),
+            leftIconName: 'plus',
+            onPress: () => {
+              router.push({
+                pathname: '/main/Settings',
+                params: { focusTab: 1 },
+              });
+            },
+          }}
+        />
       )}
       {isBudgetUsageLoading && (
         <View style={{ alignItems: 'center', marginVertical: 20 }}>

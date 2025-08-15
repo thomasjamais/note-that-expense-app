@@ -1,5 +1,6 @@
 import { useEditBudget } from '@/hooks/budgets/useEditBudget';
 import { Budgets } from '@/hooks/budgets/useGetBudgetsByTripId';
+import { theme } from '@/theme';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -14,7 +15,7 @@ export default function BudgetList({ budgets }: BudgetListProps) {
   const [showEditBudgetModal, setShowEditBudgetModal] = useState(false);
 
   if (!budgets.length) {
-    return <Text>{t('budgets.noBudgets')}</Text>;
+    return <Text style={{ ...theme.typography.subtitle }}>{t('budgets.noBudgetsTitle')}</Text>;
   }
 
   return (

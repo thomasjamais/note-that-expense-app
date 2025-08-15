@@ -30,6 +30,8 @@
         "loading": "Cargando estadísticas...",
         "error": "Error al cargar las estadísticas",
         "noData": "No tienes gastos hoy",
+        "noDataDesc": "Añade tu primer gasto para seguir tu presupuesto en tiempo real y no perderte nada.",
+        "addExpense": "Añadir un gasto",
         "expenses": "Gastos",
         "total": "Total",
         "average": "Promedio",
@@ -76,6 +78,8 @@
         "loading": "Cargando presupuestos...",
         "error": "Error al cargar los presupuestos",
         "errorOne": "Error al cargar el presupuesto",
+        "noBudgetsTitle": "Aún no tienes presupuestos",
+        "noBudgetsDesc": "Crea tu primer presupuesto para gestionar tus gastos de manera efectiva.",
         "addOrEdit": {
             "fieldsRequired": "Por favor, rellene todos los campos obligatorios.",
             "title": "Añadir un presupuesto",
@@ -182,5 +186,29 @@
         "week": "Semana",
         "month": "Mes",
         "custom": "Personalizado"
+    },
+    "account": {
+        "email": "Correo electrónico",
+        "password": "Contraseña",
+        "confirmPassword": "Confirmar contraseña",
+        "createAccount": "Crear una cuenta",
+        "login": "Iniciar sesión",
+        "logout": "Cerrar sesión",
+        "forgotPassword": "¿Olvidaste tu contraseña?",
+        "resetPassword": "Restablecer contraseña",
+        "resetPasswordSuccess": "Contraseña restablecida con éxito. Por favor, inicia sesión con tu nueva contraseña.",
+        "resetPasswordError": "Error al restablecer la contraseña.",
+        "accountCreated": "Cuenta creada con éxito.",
+        "loginError": "Error al iniciar sesión. Por favor, verifica tus credenciales.",
+        "emailRequired": "El correo electrónico es obligatorio.",
+        "passwordRequired": "La contraseña es obligatoria.",
+        "confirmPasswordRequired": "Confirmar contraseña es obligatoria.",
+        "passwordsDoNotMatch": "Las contraseñas no coinciden.",
+        "emailInvalid": "El correo electrónico no es válido.",
+        "emailOrPasswordInvalid": "Correo electrónico o contraseña inválidos.",
+        "error500": "Error del servidor. Por favor, inténtalo de nuevo más tarde.",
+        "loggingIn": "Iniciando sesión...",
+        "tooManyAttempts": "Demasiados intentos. Por favor, inténtalo de nuevo más tarde.",
+        "genericError": "Ocurrió un error. Por favor, inténtalo de nuevo."
     }
 }

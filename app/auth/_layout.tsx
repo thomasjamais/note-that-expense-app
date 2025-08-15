@@ -1,5 +1,6 @@
 import { useAuth } from '@/contexts/AuthContext';
-import { Redirect, Slot, Stack } from 'expo-router';
+import { theme } from '@/theme';
+import { Redirect, Stack } from 'expo-router';
 import { ActivityIndicator, View } from 'react-native';
 
 export default function AuthLayout() {
@@ -18,8 +19,15 @@ export default function AuthLayout() {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Slot />
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: theme.colors.background },
+        animation: 'fade',
+      }}
+    >
+      <Stack.Screen name="index" />
+      {/* <Stack.Screen name="forgot" options={{ presentation: 'modal' }} /> */}
     </Stack>
   );
 }

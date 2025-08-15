@@ -30,6 +30,8 @@
         "loading": "Loading statistics...",
         "error": "Error loading statistics",
         "noData": "You have no expenses today",
+        "noDataDesc": "Add your first expense to track your budget in real-time and not miss anything.",
+        "addExpense": "Add an expense",
         "expenses": "Expenses",
         "total": "Total",
         "average": "Average",
@@ -76,6 +78,8 @@
         "loading": "Loading budgets...",
         "error": "Error loading budgets",
         "errorOne": "Error loading budget",
+        "noBudgetsTitle": "You have no budgets yet",
+        "noBudgetsDesc": "Create your first budget to manage your expenses effectively.",
         "addOrEdit": {
             "fieldsRequired": "Please fill in all required fields.",
             "title": "Add a budget",
@@ -182,5 +186,30 @@
         "week": "Week",
         "month": "Month",
         "custom": "Custom"
+    },
+    "account": {
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm password",
+        "createAccount": "Create an account",
+        "login": "Log in",
+        "logout": "Log out",
+        "forgotPassword": "Forgot password?",
+        "resetPassword": "Reset password",
+        "resetPasswordSuccess": "Password reset successfully",
+        "resetPasswordError": "Error resetting password",
+        "accountCreated": "Account created successfully",
+        "loginError": "Error logging in. Please check your credentials.",
+        "emailRequired": "Email is required.",
+        "passwordRequired": "Password is required.",
+        "confirmPasswordRequired": "Confirm password is required.",
+        "passwordsDoNotMatch": "Passwords do not match.",
+        "emailInvalid": "Email is not valid.",
+        "emailOrPasswordInvalid": "Email or password is invalid.",
+        "error500": "Server error. Please try again later.",
+        "loggingIn": "Logging in...",
+        "passwordInvalid": "Password must be at least 8 characters long.",
+        "tooManyAttempts": "Too many attempts. Please try again later.",
+        "genericError": "An error occurred. Please try again."
     }
 }

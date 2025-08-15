@@ -8,13 +8,23 @@ import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
 import { useGetCategories } from '@/hooks/useGetCategories';
 import { theme } from '@/theme';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Text, View } from 'react-native';
 
 export default function ExpenseTrackerScreen() {
+  const { focusTab } = useLocalSearchParams();
+
   const { t } = useTranslation();
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(focusTab || 0);
+
+  useEffect(() => {
+    if (focusTab) {
+      setIndex(Number(focusTab));
+    }
+  }, [focusTab]);
+
   const {
     data: activeTrip,
     isLoading: isActiveTripLoading,

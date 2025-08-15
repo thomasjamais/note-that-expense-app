@@ -5,7 +5,7 @@ import { Dimensions, View } from 'react-native';
 import Svg, { Circle, G, Path, Text as SvgText } from 'react-native-svg';
 
 const { width } = Dimensions.get('window');
-const SIZE = Math.min(width * 0.85, 320);
+const SIZE = Math.min(Math.round(width * 0.85), 320);
 const R = SIZE / 2;
 const INNER_R = R - 28;
 
@@ -47,22 +47,34 @@ export default function DonutChart({
     () =>
       d3
         .arc<d3.PieArcDatum<DonutDatum>>()
-        .outerRadius(R + 6)
-        .innerRadius(INNER_R - 6)
+        .outerRadius(R + 8)
+        .innerRadius(INNER_R - 8)
         .cornerRadius(10),
     [],
   );
 
   return (
-    <View style={{ alignItems: 'center', marginVertical: 8 }}>
-      <Svg width={SIZE} height={SIZE} collapsable={false}>
+    <View style={{ alignItems: 'center', marginVertical: 8 }} pointerEvents="box-none">
+      <Svg
+        width={SIZE}
+        height={SIZE}
+        collapsable={false}
+        onStartShouldSetResponder={() => true}
+        onStartShouldSetResponderCapture={() => true}
+        onMoveShouldSetResponder={() => false}
+        onResponderTerminationRequest={() => false}
+      >
         <G x={R} y={R}>
           <Circle r={R} fill={theme.colors.background} />
+          <Circle r={INNER_R - 10} fill="transparent" onPress={() => onSlicePress(null)} />
+
           {arcs.map((a, i) => {
             const name = a.data.name;
             const isActive = activeName === name;
             const path = arcGen(a) as string;
             const hitPath = hitArcGen(a) as string;
+
+            const handlePress = () => onSlicePress(isActive ? null : name);
 
             return (
               <G key={`${name}-${i}`}>
@@ -72,14 +84,9 @@ export default function DonutChart({
                   opacity={isActive ? 1 : 0.88}
                   stroke={isActive ? theme.colors.primary[50] : 'transparent'}
                   strokeWidth={isActive ? 2 : 0}
+                  onPress={handlePress}
                 />
-                <Path
-                  d={hitPath}
-                  fill={a.data.color}
-                  fillOpacity={0.01}
-                  onPress={() => onSlicePress(isActive ? null : name)}
-                  onPressIn={() => {}}
-                />
+                <Path d={hitPath} fill={a.data.color} fillOpacity={0.01} onPress={handlePress} />
               </G>
             );
           })}

@@ -21,9 +21,7 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: loginUser,
 
-    onError: (error) => {
-      showMessage(`Erreur lors de la connexion : ${error.message}`, 'error');
-    },
+    onError: (error) => {},
     onSuccess: async (data) => {
       login(data.token);
       showMessage('Connexion réussie', 'success');

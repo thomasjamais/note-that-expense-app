@@ -12,19 +12,19 @@ export interface Trip {
   currency: string;
 }
 
-export const useGetAllTrips = () => {
+export const useGetUserTrips = () => {
   return useQuery<Trip[]>({
     queryKey: ['trips', 'all'],
     queryFn: async () => {
       const { data } = await api.get('/trips');
       return data.map((trip: any) => ({
         id: trip.id,
-        name: trip.name,
-        startDate: trip.start_date,
-        endDate: trip.end_date,
-        isActive: trip.is_active,
-        budget: trip.budget,
-        currency: trip.currency,
+        name: trip.label,
+        startDate: trip.startDate,
+        endDate: trip.endDate,
+        isActive: trip.isActive,
+        budget: null,
+        currency: '',
       }));
     },
     staleTime: TIME.FIVE_MINUTES_IN_MILLISECONDS,

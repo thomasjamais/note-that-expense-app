@@ -10,15 +10,15 @@ import { Text, View } from 'react-native';
 import TripStatsSkeleton from './TripStatsSkeleton';
 import EmptyState from '../ui/EmptyState';
 
-export default function TripStats() {
+export default function TripStats({ tripId }: { tripId: string }) {
   const { t } = useTranslation();
   const { data: activeTrip } = useGetActiveTrip();
-  const { data: tripStats, isLoading, isError, isFetching } = useGetTripStats(activeTrip?.id);
+  const { data: tripStats, isLoading, isError, isFetching } = useGetTripStats(tripId);
   const {
     data: budgetUsage,
     isLoading: isBudgetUsageLoading,
     isError: isBudgetUsageError,
-  } = useGetCurrentBudgetUsageByTripId(activeTrip?.id);
+  } = useGetCurrentBudgetUsageByTripId(tripId);
 
   if (isError) {
     return (

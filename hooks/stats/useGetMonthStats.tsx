@@ -36,3 +36,4 @@ export const useGetMonthStats = (tripId?: string, currentMonth?: Date) => {
     enabled: !!tripId && !!currentMonth,
   });
 };
+

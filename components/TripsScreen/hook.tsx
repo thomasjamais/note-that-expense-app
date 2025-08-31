@@ -45,7 +45,7 @@ export const useListTrips = (): UseQueryResult<Trip[]> => {
   return useQuery({
     queryKey: ['trips'],
     queryFn: async () => {
-      const response = await api.get('/trips/list');
+      const response = await api.get('/trips');
 
       return response.data;
     },

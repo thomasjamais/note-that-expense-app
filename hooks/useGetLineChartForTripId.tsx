@@ -17,7 +17,14 @@ export const useGetLineChartForTripId = (
   customEnd?: Date,
 ) => {
   return useQuery<LineChartData>({
-    queryKey: ['lineChart', tripId, range, customStart?.toISOString(), customEnd?.toISOString()],
+    queryKey: [
+      'charts',
+      'line',
+      tripId,
+      range,
+      customStart?.toISOString(),
+      customEnd?.toISOString(),
+    ],
     queryFn: async () => {
       if (!tripId) return { labels: [], legend: [], barColors: [], data: [] };
 

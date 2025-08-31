@@ -28,7 +28,14 @@ export const useGetPieChartForTripId = (
   customEnd?: Date,
 ) => {
   return useQuery<PieChartData[]>({
-    queryKey: ['pieChart', tripId, range, customStart?.toISOString(), customEnd?.toISOString()],
+    queryKey: [
+      'charts',
+      'pie',
+      tripId,
+      range,
+      customStart?.toISOString(),
+      customEnd?.toISOString(),
+    ],
     queryFn: async () => {
       if (!tripId) return [];
 

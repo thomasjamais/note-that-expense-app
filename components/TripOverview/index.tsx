@@ -1,110 +1,99 @@
-import TripStats from '@/components/TripStats';
-import Pie from '@/components/Pie';
-import LineV2 from '@/components/LineV2';
-import CategorySelector from '@/components/ui/CategorySelector';
 import { useGetCategoriesForSelector } from '@/hooks/useGetCategoriesForSelector';
 import { useGetActiveTrip } from '@/hooks/useGetActiveTrip';
-import { useGetAllTrips } from '@/hooks/useGetAllTrips';
+import { useGetUserTrips, Trip } from '@/hooks/useGetUserTrips';
+import { useGetTripById } from '@/hooks/trips/useGetTripById';
 import { theme } from '@/theme';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, View, Text } from 'react-native';
-import IconButton from '@/components/ui/IconButton';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import TripStats from '../TripStats';
+import Pie from '../Pie';
+import LineV2 from '../LineV2';
+import CategorySelector from '../ui/CategorySelector';
 
 export default function TripOverview() {
   const { t } = useTranslation();
   const { data: activeTrip } = useGetActiveTrip();
-  const { data: allTrips = [] } = useGetAllTrips();
+  const { data: allTrips = [] } = useGetUserTrips();
   const { data: categories = [] } = useGetCategoriesForSelector();
   const [selectedTrip, setSelectedTrip] = useState<string | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  // Initialiser avec le voyage actif
   useEffect(() => {
     if (activeTrip && !selectedTrip) {
       setSelectedTrip(activeTrip.id);
     }
   }, [activeTrip, selectedTrip]);
 
-  const handleCategorySelectionChange = (selectedIds: string[]) => {
-    setSelectedCategories(selectedIds);
-  };
+  const { data: selectedTripData } = useGetTripById(selectedTrip ?? undefined);
 
   const goToPreviousTrip = () => {
-    if (!selectedTrip || allTrips.length === 0) return;
-
-    const currentIndex = allTrips.findIndex((trip) => trip.id === selectedTrip);
-    if (currentIndex > 0) {
-      setSelectedTrip(allTrips[currentIndex - 1].id);
-    }
-  };
-
-  const goToNextTrip = () => {
-    if (!selectedTrip || allTrips.length === 0) return;
-
-    const currentIndex = allTrips.findIndex((trip) => trip.id === selectedTrip);
+    const currentIndex = allTrips.findIndex((trip: Trip) => trip.id === selectedTrip);
     if (currentIndex < allTrips.length - 1) {
       setSelectedTrip(allTrips[currentIndex + 1].id);
     }
   };
 
-  const canGoToPreviousTrip = () => {
-    if (!selectedTrip || allTrips.length === 0) return false;
-    const currentIndex = allTrips.findIndex((trip) => trip.id === selectedTrip);
-    return currentIndex > 0;
+  const goToNextTrip = () => {
+    const currentIndex = allTrips.findIndex((trip: Trip) => trip.id === selectedTrip);
+    if (currentIndex > 0) {
+      setSelectedTrip(allTrips[currentIndex - 1].id);
+    }
   };
 
-  const canGoToNextTrip = () => {
-    if (!selectedTrip || allTrips.length === 0) return false;
-    const currentIndex = allTrips.findIndex((trip) => trip.id === selectedTrip);
+  const canGoToPreviousTrip = () => {
+    const currentIndex = allTrips.findIndex((trip: Trip) => trip.id === selectedTrip);
     return currentIndex < allTrips.length - 1;
   };
 
+  const canGoToNextTrip = () => {
+    const currentIndex = allTrips.findIndex((trip: Trip) => trip.id === selectedTrip);
+    return currentIndex > 0;
+  };
+
   const getCurrentTrip = () => {
-    return allTrips.find((trip) => trip.id === selectedTrip) || activeTrip;
+    return allTrips.find((trip: Trip) => trip.id === selectedTrip);
+  };
+
+  const getTripName = (trip: Trip) => {
+    return trip.name;
+  };
+
+  const getTripIsActive = (trip: Trip) => {
+    return trip.isActive;
   };
 
   const currentTrip = getCurrentTrip();
 
-  // Gérer les deux types de propriétés (name pour allTrips, label pour activeTrip)
-  const getTripName = (trip: any) => {
-    return trip?.name || trip?.label || '';
-  };
-
-  const getTripIsActive = (trip: any) => {
-    return trip?.isActive || trip?.is_active || false;
-  };
+  if (!currentTrip || !selectedTripData) {
+    return null;
+  }
 
   return (
     <View style={{ flex: 1, position: 'relative' }}>
-      {/* Sélecteur de catégories flottant - en dehors du ScrollView */}
       <CategorySelector
         categories={categories}
         selectedCategories={selectedCategories}
-        onSelectionChange={handleCategorySelectionChange}
+        onSelectionChange={setSelectedCategories}
         position="top-right"
       />
 
-      <ScrollView
-        contentContainerStyle={{
-          padding: theme.spacing.lg,
-          paddingBottom: theme.spacing.xl,
-        }}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Navigation entre les voyages */}
+      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         {allTrips.length > 1 && (
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
-              marginBottom: theme.spacing.xl,
-              paddingHorizontal: theme.spacing.md,
+              paddingHorizontal: theme.spacing.lg,
+              paddingVertical: theme.spacing.md,
+              marginHorizontal: theme.spacing.lg,
+              marginTop: theme.spacing.lg,
+              borderRadius: theme.radii.lg,
             }}
           >
-            <IconButton onPress={goToPreviousTrip} disabled={!canGoToPreviousTrip()}>
+            <TouchableOpacity onPress={goToPreviousTrip} disabled={!canGoToPreviousTrip()}>
               <FontAwesome
                 name="chevron-left"
                 size={20}
@@ -112,63 +101,47 @@ export default function TripOverview() {
                   canGoToPreviousTrip() ? theme.colors.text.primary : theme.colors.text.secondary
                 }
               />
-            </IconButton>
+            </TouchableOpacity>
 
             <View style={{ alignItems: 'center', flex: 1 }}>
-              <Text
-                style={{
-                  ...theme.typography.title,
-                  color: theme.colors.text.primary,
-                  textAlign: 'center',
-                }}
-              >
+              <Text style={[theme.typography.title, { color: theme.colors.text.primary }]}>
                 {getTripName(currentTrip)}
               </Text>
               {getTripIsActive(currentTrip) && (
-                <Text
-                  style={{
-                    ...theme.typography.small,
-                    color: theme.colors.success[600],
-                    marginTop: theme.spacing.xs,
-                  }}
-                >
+                <Text style={[theme.typography.small, { color: theme.colors.primary[500] }]}>
                   {t('tripOverview.active')}
                 </Text>
               )}
             </View>
 
-            <IconButton onPress={goToNextTrip} disabled={!canGoToNextTrip()}>
+            <TouchableOpacity onPress={goToNextTrip} disabled={!canGoToNextTrip()}>
               <FontAwesome
                 name="chevron-right"
                 size={20}
                 color={canGoToNextTrip() ? theme.colors.text.primary : theme.colors.text.secondary}
               />
-            </IconButton>
+            </TouchableOpacity>
           </View>
         )}
 
-        {/* Section Statistiques du voyage */}
-        <View style={{ marginBottom: theme.spacing.xl }}>
+        <View style={{ padding: theme.spacing.lg }}>
           <Text
-            style={{
-              ...theme.typography.title,
-              marginBottom: theme.spacing.lg,
-              color: theme.colors.text.primary,
-            }}
+            style={[
+              theme.typography.title,
+              { color: theme.colors.text.primary, marginBottom: theme.spacing.md },
+            ]}
           >
             {t('tripOverview.statsTitle')}
           </Text>
-          <TripStats />
+          {selectedTrip && <TripStats tripId={selectedTrip} />}
         </View>
 
-        {/* Section Répartition par catégories */}
-        <View style={{ marginBottom: theme.spacing.xl }}>
+        <View style={{ padding: theme.spacing.lg }}>
           <Text
-            style={{
-              ...theme.typography.title,
-              marginBottom: theme.spacing.lg,
-              color: theme.colors.text.primary,
-            }}
+            style={[
+              theme.typography.title,
+              { color: theme.colors.text.primary, marginBottom: theme.spacing.md },
+            ]}
           >
             {t('tripOverview.categoriesTitle')}
           </Text>
@@ -176,19 +149,17 @@ export default function TripOverview() {
             range="total"
             tripId={selectedTrip}
             selectedCategories={selectedCategories}
-            toggleCategory={() => {}} // Géré par le CategorySelector
+            toggleCategory={() => {}}
             setSelectedCategories={setSelectedCategories}
           />
         </View>
 
-        {/* Section Évolution des dépenses */}
-        <View style={{ marginBottom: theme.spacing.xl }}>
+        <View style={{ padding: theme.spacing.lg }}>
           <Text
-            style={{
-              ...theme.typography.title,
-              marginBottom: theme.spacing.lg,
-              color: theme.colors.text.primary,
-            }}
+            style={[
+              theme.typography.title,
+              { color: theme.colors.text.primary, marginBottom: theme.spacing.md },
+            ]}
           >
             {t('tripOverview.evolutionTitle')}
           </Text>
@@ -196,7 +167,7 @@ export default function TripOverview() {
             range="total"
             tripId={selectedTrip}
             selectedCategories={selectedCategories}
-            toggleCategory={() => {}} // Géré par le CategorySelector
+            toggleCategory={() => {}}
             setSelectedCategories={setSelectedCategories}
           />
         </View>

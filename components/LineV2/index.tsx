@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 import CategoryChips from './CategoryChips';
 import EvolutionChart from './EvolutionChart';
+import EmptyState from '../ui/EmptyState';
+import { router } from 'expo-router';
 
 type LineV2Props = {
   range: PeriodRange;
@@ -55,8 +57,19 @@ export default function LineV2({
     };
   }, [data, selectedCategories]);
 
-  if (isError)
-    return <Text style={{ color: theme.colors.danger[600], textAlign: 'center' }}>Erreur…</Text>;
+  if (isError) {
+    return (
+      <EmptyState
+        title={t('chartErrors.errorTitle')}
+        description={t('chartErrors.errorDescription')}
+        illustration="chart"
+        primaryAction={{
+          label: t('chartErrors.retry'),
+          onPress: () => window.location.reload(),
+        }}
+      />
+    );
+  }
 
   if (isLoading || !filtered) {
     return (
@@ -75,6 +88,26 @@ export default function LineV2({
         <Shimmer height={28} width={260} borderRadius={8} style={{ marginTop: 12 }} />
         <Shimmer height={260} width="100%" borderRadius={16} style={{ marginTop: 12 }} />
       </View>
+    );
+  }
+
+  if (!isLoading && (!data?.data || data.data.length === 0)) {
+    return (
+      <EmptyState
+        title={t('chartErrors.noDataTitle')}
+        description={t('chartErrors.noDataDescription')}
+        illustration="clipboard"
+        primaryAction={{
+          label: t('chartErrors.addExpense'),
+          leftIconName: 'plus',
+          onPress: () => {
+            router.push({
+              pathname: '/main',
+              params: { focusTab: 0 },
+            });
+          },
+        }}
+      />
     );
   }
 

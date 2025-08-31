@@ -104,6 +104,14 @@
     "line": {
         "title": "Dépenses journalières"
     },
+    "chartErrors": {
+        "errorTitle": "Erreur de chargement",
+        "errorDescription": "Impossible de charger les données du graphique. Vérifiez votre connexion et réessayez.",
+        "retry": "Réessayer",
+        "noDataTitle": "Aucune dépense encore",
+        "noDataDescription": "Ce voyage n'a pas encore de dépenses. Ajoutez votre première dépense pour voir les statistiques.",
+        "addExpense": "Ajouter une dépense"
+    },
     "categories": {
         "title": "Catégories",
         "addCategory": "Ajouter une catégorie",
@@ -131,6 +139,7 @@
         "startDate": "Date de début",
         "endDate": "Date de fin (optionnelle)",
         "actif": "Voyage du moment",
+        "inactif": "Voyage inactif",
         "isActive": "(Actif)",
         "addButton": "Ajouter",
         "editButton": "Modifier",

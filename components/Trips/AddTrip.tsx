@@ -135,7 +135,7 @@ export default function AddTrip({
           }}
         >
           <Text style={{ color: theme.colors.text.secondary }}>
-            {isActive ? t('trips.actif') : t('trips.actif')}
+            {isActive ? t('trips.actif') : t('trips.inactif')}
           </Text>
           <Switch value={isActive} onValueChange={setIsActive} />
         </View>

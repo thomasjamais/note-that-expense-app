@@ -15,7 +15,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, View } from 'react-native';
+import { Text, View, Switch } from 'react-native';
 import AddBudgetModal from '../Budgets/AddBudgetModal';
 
 export default function HandleTripModal({
@@ -46,6 +46,7 @@ export default function HandleTripModal({
   const [endDate, setEndDate] = useState<Date | undefined>(
     selectedTrip.endDate ? new Date(selectedTrip.endDate) : undefined,
   );
+  const [isActive, setIsActive] = useState(selectedTrip.isActive);
   const [showStart, setShowStart] = useState(false);
   const [showEnd, setShowEnd] = useState(false);
 
@@ -56,6 +57,7 @@ export default function HandleTripModal({
     setHomeCurrencyId(selectedTrip.homeCurrencyId);
     setStartDate(new Date(selectedTrip.startDate));
     setEndDate(selectedTrip.endDate ? new Date(selectedTrip.endDate) : undefined);
+    setIsActive(selectedTrip.isActive);
   }, [selectedTrip]);
 
   const handleSave = () => {
@@ -66,7 +68,7 @@ export default function HandleTripModal({
       homeCurrencyId: homeCurrencyId || '',
       startDate,
       endDate,
-      isActive: selectedTrip.isActive,
+      isActive,
     });
     setModalInvisible();
   };
@@ -156,6 +158,22 @@ export default function HandleTripModal({
             }}
           />
         )}
+      </Field>
+
+      <Field label={t('trips.actif')}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingVertical: theme.spacing.sm,
+          }}
+        >
+          <Text style={{ color: theme.colors.text.secondary }}>
+            {isActive ? t('trips.actif') : t('trips.inactif')}
+          </Text>
+          <Switch value={isActive} onValueChange={setIsActive} />
+        </View>
       </Field>
 
       <View style={{ marginTop: theme.spacing.xl }}>

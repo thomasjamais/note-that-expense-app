@@ -5,6 +5,7 @@ import { theme } from '@/theme';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 export default function TripList() {
   const { t } = useTranslation();
@@ -35,10 +36,20 @@ export default function TripList() {
                 alignItems: 'center',
               }}
             >
-              <View>
-                <Text style={styles.label}>
-                  {item.label} {item.isActive ? `(${t('trips.isActive')})` : ''}
-                </Text>
+              <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Text style={styles.label}>{item.label}</Text>
+                  {item.isActive && (
+                    <View style={styles.activeIndicator}>
+                      <FontAwesome
+                        name="check-circle"
+                        size={16}
+                        color={theme.colors.success[300]}
+                      />
+                      <Text style={styles.activeText}>{t('trips.isActive')}</Text>
+                    </View>
+                  )}
+                </View>
                 <Text style={styles.meta}>{new Date(item.startDate).toLocaleDateString()}</Text>
               </View>
             </View>
@@ -60,4 +71,19 @@ const styles = StyleSheet.create({
   title: { ...theme.typography.subtitle, marginBottom: theme.spacing.sm },
   label: { fontSize: 16, fontWeight: '700', color: theme.colors.text.primary },
   meta: { marginTop: 2, color: theme.colors.text.secondary },
+  activeIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: theme.spacing.sm,
+    backgroundColor: theme.colors.success + '20',
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs,
+    borderRadius: theme.radii.sm,
+  },
+  activeText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: theme.colors.success[300],
+    marginLeft: theme.spacing.xs,
+  },
 });

@@ -9,6 +9,8 @@ import Skeleton from '../ui/Skeleton';
 import Categories from './Categories';
 import CategoryList from './CategoryList';
 import DonutChart from './DonutChart';
+import { router } from 'expo-router';
+import EmptyState from '../ui/EmptyState';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -70,17 +72,45 @@ export default function Pie({
 
   if (isError) {
     return (
-      <Text style={{ color: theme.colors.danger[600], textAlign: 'center' }}>{t('pie.error')}</Text>
+      <EmptyState
+        title={t('chartErrors.errorTitle')}
+        description={t('chartErrors.errorDescription')}
+        illustration="chart"
+        primaryAction={{
+          label: t('chartErrors.retry'),
+          onPress: () => window.location.reload(),
+        }}
+      />
     );
   }
 
-  if (isLoading || !data) {
+  if (isLoading) {
     return (
       <View style={{ alignItems: 'center', marginVertical: 20 }}>
         <Skeleton width={screenWidth * 0.55} height={200} borderRadius={110} />
         <Skeleton width={180} height={18} style={{ marginTop: 10 }} />
         <Skeleton width={120} height={18} style={{ marginTop: 6 }} />
       </View>
+    );
+  }
+
+  if (!isLoading && (!data || data.length === 0)) {
+    return (
+      <EmptyState
+        title={t('chartErrors.noDataTitle')}
+        description={t('chartErrors.noDataDescription')}
+        illustration="clipboard"
+        primaryAction={{
+          label: t('chartErrors.addExpense'),
+          leftIconName: 'plus',
+          onPress: () => {
+            router.push({
+              pathname: '/main',
+              params: { focusTab: 0 },
+            });
+          },
+        }}
+      />
     );
   }
 
@@ -119,7 +149,7 @@ export default function Pie({
       </Text>
 
       <Categories
-        pieChartData={data}
+        pieChartData={data!}
         selectedCategories={selectedCategories}
         setSelectedCategories={setSelectedCategories}
         toggleCategory={toggleCategory}

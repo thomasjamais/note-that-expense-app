@@ -104,6 +104,14 @@
     "line": {
         "title": "Daily expenses"
     },
+    "chartErrors": {
+        "errorTitle": "Loading error",
+        "errorDescription": "Unable to load the chart data. Please check your connection and try again.",
+        "retry": "Retry",
+        "noDataTitle": "No expenses yet",
+        "noDataDescription": "This trip has no expenses yet. Add your first expense to see the statistics.",
+        "addExpense": "Add an expense"
+    },
     "categories": {
         "title": "Categories",
         "addCategory": "Add a category",
@@ -131,6 +139,7 @@
         "startDate": "Start date",
         "endDate": "End date (optional)",
         "actif": "Current trip",
+        "inactif": "Inactive trip",
         "isActive": "(Active)",
         "addButton": "Add",
         "editButton": "Edit",

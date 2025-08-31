@@ -104,6 +104,14 @@
     "line": {
         "title": "Gastos diarios"
     },
+    "chartErrors": {
+        "errorTitle": "Error de carga",
+        "errorDescription": "No se pudieron cargar los datos del gráfico. Por favor, verifica tu conexión y vuelve a intentarlo.",
+        "retry": "Reintentar",
+        "noDataTitle": "Aún no hay gastos",
+        "noDataDescription": "Este viaje aún no tiene gastos. Añade tu primer gasto para ver las estadísticas.",
+        "addExpense": "Añadir un gasto"
+    },
     "categories": {
         "title": "Categorías",
         "addCategory": "Añadir categoría",
@@ -131,6 +139,7 @@
         "startDate": "Fecha de inicio",
         "endDate": "Fecha de fin (opcional)",
         "actif": "Viaje actual",
+        "inactif": "Viaje inactivo",
         "isActive": "(Activo)",
         "addButton": "Añadir",
         "editButton": "Editar",

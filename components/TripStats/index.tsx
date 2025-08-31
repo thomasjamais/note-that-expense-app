@@ -8,6 +8,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 import TripStatsSkeleton from './TripStatsSkeleton';
+import EmptyState from '../ui/EmptyState';
 
 export default function TripStats() {
   const { t } = useTranslation();
@@ -20,8 +21,19 @@ export default function TripStats() {
   } = useGetCurrentBudgetUsageByTripId(activeTrip?.id);
 
   if (isError) {
-    return <Text style={{ color: theme.colors.text.secondary }}>{t('tripStats.noData')}</Text>;
+    return (
+      <EmptyState
+        title={t('chartErrors.errorTitle')}
+        description={t('chartErrors.errorDescription')}
+        illustration="chart"
+        primaryAction={{
+          label: t('chartErrors.retry'),
+          onPress: () => window.location.reload(),
+        }}
+      />
+    );
   }
+
   if (isLoading || isFetching) {
     return <TripStatsSkeleton />;
   }

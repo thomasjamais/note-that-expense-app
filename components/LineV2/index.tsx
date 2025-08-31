@@ -15,6 +15,7 @@ type LineV2Props = {
   range: PeriodRange;
   customStart?: string;
   customEnd?: string;
+  tripId?: string | null;
   selectedCategories: string[];
   toggleCategory: (name: string) => void;
   setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
@@ -24,6 +25,7 @@ export default function LineV2({
   range,
   customStart,
   customEnd,
+  tripId,
   selectedCategories,
   toggleCategory,
   setSelectedCategories,
@@ -31,8 +33,11 @@ export default function LineV2({
   const { t } = useTranslation();
   const { data: activeTrip } = useGetActiveTrip();
 
+  // Utiliser le tripId fourni ou le voyage actif
+  const effectiveTripId = tripId || activeTrip?.id;
+
   const { data, isLoading, isError } = useGetLineChartForTripId(
-    activeTrip?.id,
+    effectiveTripId,
     range,
     customStart ? new Date(customStart) : undefined,
     customEnd ? new Date(customEnd) : undefined,

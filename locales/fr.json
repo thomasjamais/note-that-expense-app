@@ -104,14 +104,6 @@
     "line": {
         "title": "Dépenses journalières"
     },
-    "chartErrors": {
-        "errorTitle": "Erreur de chargement",
-        "errorDescription": "Impossible de charger les données du graphique. Vérifiez votre connexion et réessayez.",
-        "retry": "Réessayer",
-        "noDataTitle": "Aucune dépense encore",
-        "noDataDescription": "Ce voyage n'a pas encore de dépenses. Ajoutez votre première dépense pour voir les statistiques.",
-        "addExpense": "Ajouter une dépense"
-    },
     "categories": {
         "title": "Catégories",
         "addCategory": "Ajouter une catégorie",
@@ -139,7 +131,6 @@
         "startDate": "Date de début",
         "endDate": "Date de fin (optionnelle)",
         "actif": "Voyage du moment",
-        "inactif": "Voyage inactif",
         "isActive": "(Actif)",
         "addButton": "Ajouter",
         "editButton": "Modifier",
@@ -171,6 +162,7 @@
         "settings": "Paramètres",
         "categories": "Catégories",
         "trips": "Voyages",
+        "month": "Mois",
         "daily": "Journée",
         "pie": "Types",
         "line": "Évolution"
@@ -220,5 +212,45 @@
         "passwordInvalid": "Le mot de passe doit contenir au moins 8 caractères.",
         "tooManyAttempts": "Trop de tentatives de connexion. Veuillez réessayer dans quelques minutes.",
         "genericError": "Une erreur est survenue. Veuillez réessayer."
+    },
+    "chartErrors": {
+        "errorTitle": "Erreur de chargement",
+        "errorDescription": "Impossible de charger les données du graphique. Vérifiez votre connexion et réessayez.",
+        "retry": "Réessayer",
+        "noDataTitle": "Aucune dépense encore",
+        "noDataDescription": "Cette période n'a pas encore de dépenses. Ajoutez votre première dépense pour voir les statistiques.",
+        "addExpense": "Ajouter une dépense"
+    },
+    "monthOverview": {
+        "statsTitle": "Statistiques du mois",
+        "categoriesTitle": "Répartition par catégories",
+        "evolutionTitle": "Évolution des dépenses"
+    },
+    "dayOverview": {
+        "statsTitle": "Statistiques du jour",
+        "categoriesTitle": "Répartition par catégories",
+        "evolutionTitle": "Évolution des dépenses",
+        "today": "Aujourd'hui"
+    },
+    "monthStats": {
+        "days": "Jours",
+        "total": "Total",
+        "averageDaily": "Moyenne/jour",
+        "biggestDay": "Plus gros jour",
+        "error": "Erreur lors du chargement des statistiques"
+    },
+    "categorySelector": {
+        "title": "Filtrer par catégories",
+        "selectAll": "Tout sélectionner",
+        "deselectAll": "Tout désélectionner",
+        "noSelection": "Aucune catégorie sélectionnée",
+        "allSelected": "Toutes les catégories sélectionnées",
+        "selectedCount": "{{count}} sur {{total}} catégories sélectionnées"
+    },
+    "tripOverview": {
+        "statsTitle": "Statistiques du voyage",
+        "categoriesTitle": "Répartition par catégories",
+        "evolutionTitle": "Évolution des dépenses",
+        "active": "Voyage actif"
     }
 }

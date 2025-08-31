@@ -16,10 +16,19 @@ import DailyStatsSkeleton from './DailyStatsSkeleton';
 
 const screenWidth = Dimensions.get('window').width;
 
-export default function DailyStats() {
+type DailyStatsProps = {
+  customDate?: Date;
+};
+
+export default function DailyStats({ customDate }: DailyStatsProps) {
   const { t } = useTranslation();
   const { data: activeTrip } = useGetActiveTrip();
-  const { data: dailyStats, isLoading, isError, isFetching } = useGetDailyStats(activeTrip?.id);
+  const {
+    data: dailyStats,
+    isLoading,
+    isError,
+    isFetching,
+  } = useGetDailyStats(activeTrip?.id, customDate);
   const { data: tripStats } = useGetTripStats(activeTrip?.id);
   const {
     data: budgetUsage,

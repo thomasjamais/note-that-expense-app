@@ -104,14 +104,6 @@
     "line": {
         "title": "Gastos diarios"
     },
-    "chartErrors": {
-        "errorTitle": "Error de carga",
-        "errorDescription": "No se pudieron cargar los datos del gráfico. Por favor, verifica tu conexión y vuelve a intentarlo.",
-        "retry": "Reintentar",
-        "noDataTitle": "Aún no hay gastos",
-        "noDataDescription": "Este viaje aún no tiene gastos. Añade tu primer gasto para ver las estadísticas.",
-        "addExpense": "Añadir un gasto"
-    },
     "categories": {
         "title": "Categorías",
         "addCategory": "Añadir categoría",
@@ -139,7 +131,6 @@
         "startDate": "Fecha de inicio",
         "endDate": "Fecha de fin (opcional)",
         "actif": "Viaje actual",
-        "inactif": "Viaje inactivo",
         "isActive": "(Activo)",
         "addButton": "Añadir",
         "editButton": "Editar",
@@ -171,6 +162,7 @@
         "settings": "Configuración",
         "categories": "Categorías",
         "trips": "Viajes",
+        "month": "Mes",
         "daily": "Diario",
         "pie": "Tipos",
         "line": "Evolución"
@@ -219,5 +211,45 @@
         "loggingIn": "Iniciando sesión...",
         "tooManyAttempts": "Demasiados intentos. Por favor, inténtalo de nuevo más tarde.",
         "genericError": "Ocurrió un error. Por favor, inténtalo de nuevo."
+    },
+    "chartErrors": {
+        "errorTitle": "Error de carga",
+        "errorDescription": "No se pudieron cargar los datos del gráfico. Por favor, verifica tu conexión y vuelve a intentarlo.",
+        "retry": "Reintentar",
+        "noDataTitle": "Aún no hay gastos",
+        "noDataDescription": "Este período aún no tiene gastos. Añade tu primer gasto para ver las estadísticas.",
+        "addExpense": "Añadir un gasto"
+    },
+    "monthOverview": {
+        "statsTitle": "Estadísticas del mes",
+        "categoriesTitle": "Distribución por categorías",
+        "evolutionTitle": "Evolución de gastos"
+    },
+    "dayOverview": {
+        "statsTitle": "Estadísticas del día",
+        "categoriesTitle": "Distribución por categorías",
+        "evolutionTitle": "Evolución de gastos",
+        "today": "Hoy"
+    },
+    "monthStats": {
+        "days": "Días",
+        "total": "Total",
+        "averageDaily": "Promedio diario",
+        "biggestDay": "Día más alto",
+        "error": "Error al cargar las estadísticas"
+    },
+    "categorySelector": {
+        "title": "Filtrar por categorías",
+        "selectAll": "Seleccionar todo",
+        "deselectAll": "Deseleccionar todo",
+        "noSelection": "Ninguna categoría seleccionada",
+        "allSelected": "Todas las categorías seleccionadas",
+        "selectedCount": "{{count}} de {{total}} categorías seleccionadas"
+    },
+    "tripOverview": {
+        "statsTitle": "Estadísticas del viaje",
+        "categoriesTitle": "Distribución por categorías",
+        "evolutionTitle": "Evolución de gastos",
+        "active": "Viaje activo"
     }
 }

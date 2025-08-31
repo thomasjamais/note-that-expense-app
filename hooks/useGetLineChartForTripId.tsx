@@ -13,29 +13,28 @@ export type LineChartData = {
 export const useGetLineChartForTripId = (
   tripId?: string,
   range: PeriodRange = 'total',
-  start?: Date,
-  end?: Date,
+  customStart?: Date,
+  customEnd?: Date,
 ) => {
   return useQuery<LineChartData>({
-    queryKey: [
-      'charts',
-      'line',
-      tripId,
-      range,
-      start ? start.toString() : null,
-      end ? end.toString() : null,
-    ],
+    queryKey: ['lineChart', tripId, range, customStart?.toISOString(), customEnd?.toISOString()],
     queryFn: async () => {
-      let url = `/charts/line/trip/${tripId}?range=${range}`;
+      if (!tripId) return { labels: [], legend: [], barColors: [], data: [] };
 
-      if (range === 'custom' && start && end) {
-        url += `&start=${encodeURIComponent(start.toISOString())}&end=${encodeURIComponent(end.toISOString())}`;
+      const params = new URLSearchParams();
+      params.append('range', range);
+
+      if (customStart) {
+        params.append('start', customStart.toISOString());
       }
-      const { data } = await api.get(url);
+      if (customEnd) {
+        params.append('end', customEnd.toISOString());
+      }
 
+      const { data } = await api.get(`/charts/line/trip/${tripId}?${params.toString()}`);
       return data;
     },
-    staleTime: TIME.FIVE_MINUTES_IN_MILLISECONDS,
     enabled: !!tripId,
+    staleTime: TIME.FIVE_MINUTES_IN_MILLISECONDS,
   });
 };

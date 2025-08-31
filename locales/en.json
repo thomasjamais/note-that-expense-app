@@ -104,14 +104,6 @@
     "line": {
         "title": "Daily expenses"
     },
-    "chartErrors": {
-        "errorTitle": "Loading error",
-        "errorDescription": "Unable to load the chart data. Please check your connection and try again.",
-        "retry": "Retry",
-        "noDataTitle": "No expenses yet",
-        "noDataDescription": "This trip has no expenses yet. Add your first expense to see the statistics.",
-        "addExpense": "Add an expense"
-    },
     "categories": {
         "title": "Categories",
         "addCategory": "Add a category",
@@ -139,7 +131,6 @@
         "startDate": "Start date",
         "endDate": "End date (optional)",
         "actif": "Current trip",
-        "inactif": "Inactive trip",
         "isActive": "(Active)",
         "addButton": "Add",
         "editButton": "Edit",
@@ -171,6 +162,7 @@
         "settings": "Settings",
         "categories": "Categories",
         "trips": "Trips",
+        "month": "Month",
         "daily": "Daily",
         "pie": "Types",
         "line": "Evolution"
@@ -220,5 +212,45 @@
         "passwordInvalid": "Password must be at least 8 characters long.",
         "tooManyAttempts": "Too many attempts. Please try again later.",
         "genericError": "An error occurred. Please try again."
+    },
+    "chartErrors": {
+        "errorTitle": "Loading error",
+        "errorDescription": "Unable to load the chart data. Please check your connection and try again.",
+        "retry": "Retry",
+        "noDataTitle": "No expenses yet",
+        "noDataDescription": "This period has no expenses yet. Add your first expense to see the statistics.",
+        "addExpense": "Add an expense"
+    },
+    "monthOverview": {
+        "statsTitle": "Month Statistics",
+        "categoriesTitle": "Category Distribution",
+        "evolutionTitle": "Expense Evolution"
+    },
+    "dayOverview": {
+        "statsTitle": "Day Statistics",
+        "categoriesTitle": "Category Distribution",
+        "evolutionTitle": "Expense Evolution",
+        "today": "Today"
+    },
+    "monthStats": {
+        "days": "Days",
+        "total": "Total",
+        "averageDaily": "Daily Average",
+        "biggestDay": "Biggest Day",
+        "error": "Error loading statistics"
+    },
+    "categorySelector": {
+        "title": "Filter by categories",
+        "selectAll": "Select all",
+        "deselectAll": "Deselect all",
+        "noSelection": "No categories selected",
+        "allSelected": "All categories selected",
+        "selectedCount": "{{count}} of {{total}} categories selected"
+    },
+    "tripOverview": {
+        "statsTitle": "Trip Statistics",
+        "categoriesTitle": "Expenses by Category",
+        "evolutionTitle": "Expense Evolution",
+        "active": "Active trip"
     }
 }

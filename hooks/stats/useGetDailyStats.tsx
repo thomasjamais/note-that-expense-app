@@ -15,11 +15,16 @@ export type DailyStats = {
   topCategory: string;
 };
 
-export const useGetDailyStats = (tripId?: string) => {
+export const useGetDailyStats = (tripId?: string, customDate?: Date) => {
   return useQuery<DailyStats>({
-    queryKey: ['stats', tripId, 'daily'],
+    queryKey: ['stats', tripId, 'daily', customDate?.toISOString()],
     queryFn: async () => {
-      const { data } = await api.get(`/expenses/trip/${tripId}/stats/daily`);
+      const params: any = {};
+      if (customDate) {
+        params.date = customDate.toISOString();
+      }
+
+      const { data } = await api.get(`/expenses/trip/${tripId}/stats/daily`, { params });
       return data;
     },
     staleTime: TIME.FIVE_MINUTES_IN_MILLISECONDS,

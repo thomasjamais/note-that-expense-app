@@ -24,30 +24,28 @@ export type PeriodRange = 'week' | 'month' | 'total' | 'custom';
 export const useGetPieChartForTripId = (
   tripId?: string,
   range: PeriodRange = 'total',
-  start?: Date,
-  end?: Date,
+  customStart?: Date,
+  customEnd?: Date,
 ) => {
   return useQuery<PieChartData[]>({
-    queryKey: [
-      'charts',
-      'pie',
-      tripId,
-      range,
-      start ? start.toString() : null,
-      end ? end.toString() : null,
-    ],
+    queryKey: ['pieChart', tripId, range, customStart?.toISOString(), customEnd?.toISOString()],
     queryFn: async () => {
       if (!tripId) return [];
 
-      let url = `/charts/pie/trip/${tripId}?range=${range}`;
+      const params = new URLSearchParams();
+      params.append('range', range);
 
-      if (range === 'custom' && start && end) {
-        url += `&start=${encodeURIComponent(start.toISOString())}&end=${encodeURIComponent(end.toISOString())}`;
+      if (customStart) {
+        params.append('start', customStart.toISOString());
+      }
+      if (customEnd) {
+        params.append('end', customEnd.toISOString());
       }
 
-      const { data } = await api.get(url);
+      const { data } = await api.get(`/charts/pie/trip/${tripId}?${params.toString()}`);
 
-      const pie = data.map((item: PieChartInput) => ({
+      // Transformer les données dans le format attendu par le composant Pie
+      const pie = data.map((item: any) => ({
         name: item.categoryLabel.trim(),
         population: parseFloat(item.totalAmount.toString()),
         color: item.categoryColor,
@@ -57,7 +55,7 @@ export const useGetPieChartForTripId = (
 
       return pie;
     },
-    staleTime: TIME.FIVE_MINUTES_IN_MILLISECONDS,
     enabled: !!tripId,
+    staleTime: TIME.FIVE_MINUTES_IN_MILLISECONDS,
   });
 };
